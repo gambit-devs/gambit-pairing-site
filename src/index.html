@@ -1,0 +1,1824 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Gambit Pairing | Swiss Tournament Manager</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style type="text/css">
+        @font-face {
+            font-family: Inter;
+            font-style: normal;
+            font-weight: 400;
+            src: url(/cf-fonts/v/inter/5.0.16/latin-ext/wght/normal.woff2);
+            unicode-range: U+0100-02AF, U+0304, U+0308, U+0329, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: Inter;
+            font-style: normal;
+            font-weight: 400;
+            src: url(/cf-fonts/v/inter/5.0.16/vietnamese/wght/normal.woff2);
+            unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: Inter;
+            font-style: normal;
+            font-weight: 400;
+            src: url(/cf-fonts/v/inter/5.0.16/cyrillic-ext/wght/normal.woff2);
+            unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: Inter;
+            font-style: normal;
+            font-weight: 400;
+            src: url(/cf-fonts/v/inter/5.0.16/latin/wght/normal.woff2);
+            unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: Inter;
+            font-style: normal;
+            font-weight: 400;
+            src: url(/cf-fonts/v/inter/5.0.16/cyrillic/wght/normal.woff2);
+            unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: Inter;
+            font-style: normal;
+            font-weight: 400;
+            src: url(/cf-fonts/v/inter/5.0.16/greek/wght/normal.woff2);
+            unicode-range: U+0370-03FF;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: Inter;
+            font-style: normal;
+            font-weight: 400;
+            src: url(/cf-fonts/v/inter/5.0.16/greek-ext/wght/normal.woff2);
+            unicode-range: U+1F00-1FFF;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: Inter;
+            font-style: normal;
+            font-weight: 700;
+            src: url(/cf-fonts/v/inter/5.0.16/greek/wght/normal.woff2);
+            unicode-range: U+0370-03FF;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: Inter;
+            font-style: normal;
+            font-weight: 700;
+            src: url(/cf-fonts/v/inter/5.0.16/cyrillic-ext/wght/normal.woff2);
+            unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: Inter;
+            font-style: normal;
+            font-weight: 700;
+            src: url(/cf-fonts/v/inter/5.0.16/vietnamese/wght/normal.woff2);
+            unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: Inter;
+            font-style: normal;
+            font-weight: 700;
+            src: url(/cf-fonts/v/inter/5.0.16/latin-ext/wght/normal.woff2);
+            unicode-range: U+0100-02AF, U+0304, U+0308, U+0329, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: Inter;
+            font-style: normal;
+            font-weight: 700;
+            src: url(/cf-fonts/v/inter/5.0.16/greek-ext/wght/normal.woff2);
+            unicode-range: U+1F00-1FFF;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: Inter;
+            font-style: normal;
+            font-weight: 700;
+            src: url(/cf-fonts/v/inter/5.0.16/cyrillic/wght/normal.woff2);
+            unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: Inter;
+            font-style: normal;
+            font-weight: 700;
+            src: url(/cf-fonts/v/inter/5.0.16/latin/wght/normal.woff2);
+            unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: Inter;
+            font-style: normal;
+            font-weight: 900;
+            src: url(/cf-fonts/v/inter/5.0.16/cyrillic/wght/normal.woff2);
+            unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: Inter;
+            font-style: normal;
+            font-weight: 900;
+            src: url(/cf-fonts/v/inter/5.0.16/greek/wght/normal.woff2);
+            unicode-range: U+0370-03FF;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: Inter;
+            font-style: normal;
+            font-weight: 900;
+            src: url(/cf-fonts/v/inter/5.0.16/greek-ext/wght/normal.woff2);
+            unicode-range: U+1F00-1FFF;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: Inter;
+            font-style: normal;
+            font-weight: 900;
+            src: url(/cf-fonts/v/inter/5.0.16/latin/wght/normal.woff2);
+            unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: Inter;
+            font-style: normal;
+            font-weight: 900;
+            src: url(/cf-fonts/v/inter/5.0.16/latin-ext/wght/normal.woff2);
+            unicode-range: U+0100-02AF, U+0304, U+0308, U+0329, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: Inter;
+            font-style: normal;
+            font-weight: 900;
+            src: url(/cf-fonts/v/inter/5.0.16/cyrillic-ext/wght/normal.woff2);
+            unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: Inter;
+            font-style: normal;
+            font-weight: 900;
+            src: url(/cf-fonts/v/inter/5.0.16/vietnamese/wght/normal.woff2);
+            unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+            font-display: swap;
+        }
+    </style>
+    <link rel="icon" href="../assets/logo.webp">
+    <style>
+        :root {
+            --black: #181a1b;
+            --white: #fff;
+            --gray: #e5e5e5;
+            --muted: #888;
+            --accent: #e2c290;
+            --accent-dark: #bfa36e;
+            --green: #3b5e2b;
+            --green-dark: #2d471f;
+            --beige: #f5e9da;
+            --shadow: 0 6px 32px 0 rgba(0, 0, 0, 0.10);
+            --radius-lg: 28px;
+            --radius-md: 18px;
+            --radius-sm: 8px;
+            --transition: 0.18s cubic-bezier(.4, 0, .2, 1);
+        }
+
+        html,
+        body {
+            background: linear-gradient(120deg, #f8f4ee 0%, #e2c290 100%);
+            color: var(--black);
+            font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            font-size: 17px;
+            line-height: 1.7;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* --- BACKGROUND TEXT --- */
+        .bg-text-gambit {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+            font-weight: 900;
+            font-size: 8vw;
+            color: #181a1b;
+            opacity: 0.06;
+            letter-spacing: 0.04em;
+            white-space: nowrap;
+            z-index: 0;
+            pointer-events: none;
+            user-select: none;
+            text-shadow: 0 2px 24px rgba(0, 0, 0, 0.09), 0 0 80px #e2c290;
+            filter: blur(0.5px);
+            transition: opacity 0.4s;
+            word-spacing: 650px;
+        }
+
+        @media (max-width: 900px) {
+            .bg-text-gambit {
+                font-size: 13vw;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .bg-text-gambit {
+                font-size: 18vw;
+            }
+        }
+
+        /* --- NAVIGATION --- */
+        header {
+            background: none;
+            color: var(--black);
+            padding: 0;
+            margin: 0;
+            box-shadow: none;
+            z-index: 100;
+            position: sticky;
+            top: 0;
+            border-bottom: none;
+        }
+
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1.2rem 2vw 1.2rem 2vw;
+            background: rgba(255, 255, 255, 0.92);
+            border-radius: 0 0 18px 18px;
+            box-shadow: 0 2px 24px 0 rgba(0, 0, 0, 0.04);
+            position: relative;
+        }
+
+        .navbar-logo {
+            font-weight: 900;
+            font-size: 1.5rem;
+            letter-spacing: 0.01em;
+            color: var(--green-dark);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.6em;
+            transition: color var(--transition), background var(--transition);
+            padding: 0.2em 0.5em;
+            border-radius: 8px;
+        }
+
+        .navbar-logo:hover,
+        .navbar-logo:focus {
+            color: var(--accent-dark);
+            background: var(--beige);
+        }
+
+        .navbar-links {
+            display: flex;
+            align-items: center;
+            gap: 2.2rem;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            /* --- NEW: Hide on mobile, show as overlay --- */
+            transition: all 0.3s cubic-bezier(.4, 0, .2, 1);
+        }
+
+        .navbar-links a {
+            color: var(--green-dark);
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.08rem;
+            padding: 0.5em 1.2em;
+            border-radius: 8px;
+            transition: background var(--transition), color var(--transition), box-shadow var(--transition);
+            position: relative;
+            background: none;
+            border: none;
+            outline: none;
+        }
+
+        .navbar-links a:hover,
+        .navbar-links a:focus {
+            background: var(--accent);
+            color: var(--black);
+            box-shadow: 0 2px 12px 0 #e2c29033;
+        }
+
+        .navbar-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 2.2rem;
+            color: var(--green-dark);
+            cursor: pointer;
+            margin-left: 1em;
+            padding: 0.2em 0.5em;
+            border-radius: 8px;
+            transition: background var(--transition), color var(--transition);
+            z-index: 1201;
+        }
+
+        .navbar-toggle:focus,
+        .navbar-toggle:hover {
+            background: var(--beige);
+            color: var(--accent-dark);
+        }
+
+        /* Hamburger icon bars */
+        .navbar-toggle .bar {
+            display: block;
+            width: 30px;
+            height: 3px;
+            margin: 5px 0;
+            background: var(--green-dark);
+            border-radius: 5px;
+            transition: transform 0.3s, opacity 0.3s;
+        }
+
+        .navbar-toggle.is-active .bar:nth-child(1) {
+            transform: translateY(8px) rotate(45deg);
+        }
+
+        .navbar-toggle.is-active .bar:nth-child(2) {
+            opacity: 0;
+        }
+
+        .navbar-toggle.is-active .bar:nth-child(3) {
+            transform: translateY(-8px) rotate(-45deg);
+        }
+
+        /* --- NEW: Fullscreen mobile menu overlay --- */
+        @media (max-width: 700px) {
+            .navbar {
+                flex-direction: row;
+                padding: 1.2rem 0.7rem;
+            }
+
+            .navbar-links {
+                display: none;
+                flex-direction: column;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                background: rgba(255, 255, 255, 0.98);
+                box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.08);
+                border-radius: 0;
+                min-width: unset;
+                z-index: 1200;
+                padding: 0;
+                gap: 0;
+                justify-content: center;
+                align-items: center;
+                opacity: 0;
+                pointer-events: none;
+                transition: opacity 0.25s cubic-bezier(.4, 0, .2, 1);
+            }
+
+            .navbar-links.open {
+                display: flex;
+                opacity: 1;
+                pointer-events: auto;
+            }
+
+            .navbar-links a {
+                width: 80vw;
+                max-width: 340px;
+                text-align: center;
+                padding: 1.2em 0;
+                border-radius: 12px;
+                border-bottom: none;
+                font-size: 1.25rem;
+                margin: 0.2em 0;
+                background: none;
+                box-shadow: 0 1px 8px 0 #e2c29011;
+            }
+
+            .navbar-links a:active {
+                background: var(--accent);
+                color: var(--black);
+            }
+
+            .navbar-toggle {
+                display: block;
+                position: relative;
+                z-index: 1201;
+            }
+
+            /* --- Remove overlay close area from here --- */
+            .navbar-links::before {
+                content: none !important;
+                display: none !important;
+            }
+
+            /* --- New: overlay background for mobile menu --- */
+            .navbar-overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                background: rgba(255, 255, 255, 0.98);
+                z-index: 1199;
+                transition: opacity 0.25s cubic-bezier(.4, 0, .2, 1);
+                opacity: 0;
+            }
+
+            .navbar-overlay.open {
+                display: block;
+                opacity: 1;
+                pointer-events: auto;
+            }
+        }
+
+        /* --- NEW: Animate menu fade-in/out --- */
+        .navbar-links,
+        .navbar-links.open {
+            will-change: opacity;
+        }
+
+        @media (max-width: 900px) {
+            .navbar {
+                padding: 1.2rem 0.5em;
+            }
+        }
+
+        @media (max-width: 700px) {
+            .navbar {
+                flex-direction: row;
+                padding: 1.2rem 0.7rem;
+            }
+
+            .navbar-links {
+                display: none;
+                flex-direction: column;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                background: rgba(255, 255, 255, 0.98);
+                box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.08);
+                border-radius: 0;
+                min-width: unset;
+                z-index: 1200;
+                padding: 0;
+                gap: 0;
+                justify-content: center;
+                align-items: center;
+                opacity: 0;
+                pointer-events: none;
+                transition: opacity 0.25s cubic-bezier(.4, 0, .2, 1);
+            }
+
+            .navbar-links.open {
+                display: flex;
+                opacity: 1;
+                pointer-events: auto;
+            }
+
+            .navbar-links a {
+                width: 80vw;
+                max-width: 340px;
+                text-align: center;
+                padding: 1.2em 0;
+                border-radius: 12px;
+                border-bottom: none;
+                font-size: 1.25rem;
+                margin: 0.2em 0;
+                background: none;
+                box-shadow: 0 1px 8px 0 #e2c29011;
+            }
+
+            .navbar-links a:active {
+                background: var(--accent);
+                color: var(--black);
+            }
+
+            .navbar-toggle {
+                display: block;
+                position: relative;
+                z-index: 1201;
+            }
+
+            /* --- Remove overlay close area from here --- */
+            .navbar-links::before {
+                content: none !important;
+                display: none !important;
+            }
+
+            /* --- New: overlay background for mobile menu --- */
+            .navbar-overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                background: rgba(255, 255, 255, 0.98);
+                z-index: 1199;
+                transition: opacity 0.25s cubic-bezier(.4, 0, .2, 1);
+                opacity: 0;
+            }
+
+            .navbar-overlay.open {
+                display: block;
+                opacity: 1;
+                pointer-events: auto;
+            }
+        }
+
+        /* --- HERO --- */
+        .hero {
+            min-height: 420px;
+            text-align: center;
+            position: relative;
+            overflow: visible;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 0.5em;
+            border-bottom: 1.5px solid #e2c29044;
+        }
+
+        .hero-content {
+            background: none;
+            border-radius: 0;
+            box-shadow: none;
+            border: none;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 4.5rem 2vw 2.5rem 2vw;
+            animation: fadein 1.2s cubic-bezier(.4, 0, .2, 1);
+            transition: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .hero-title {
+            font-size: 3.2rem;
+            font-weight: 900;
+            letter-spacing: 0.01em;
+            margin-bottom: 0.2em;
+            color: var(--green-dark);
+            text-shadow: 0 2px 12px #e2c29033;
+            line-height: 1.05;
+            background: linear-gradient(90deg, #e2c290 30%, #fffbe8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            color: var(--black);
+            font-size: 1.35rem;
+            font-weight: 500;
+            margin-bottom: 1.2em;
+            letter-spacing: 0.01em;
+            text-shadow: 0 1px 8px #e2c29022;
+            max-width: 600px;
+        }
+
+        .hero-description {
+            color: var(--muted);
+            font-size: 1.13rem;
+            margin: 1.2em 0 0.5em 0;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        .badge-row {
+            margin: 1.5em 0 0.5em 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.7em;
+            justify-content: center;
+        }
+
+        .badge-row img {
+            background: var(--gray);
+            border-radius: 7px;
+            padding: 0.2em 0.7em;
+            height: 28px;
+            box-shadow: 0 1px 8px 0 #e2c29022;
+            border: 1px solid #e2c29033;
+        }
+
+        .hero-cta-row {
+            display: flex;
+            justify-content: center;
+            gap: 1.2em;
+            margin: 2.2em 0 1.2em 0;
+            flex-wrap: wrap;
+        }
+
+        .main-button {
+            display: inline-block;
+            padding: 1.1em 2.7em;
+            background: linear-gradient(90deg, var(--green) 80%, var(--green-dark) 100%);
+            color: var(--white);
+            border-radius: 14px;
+            font-weight: 900;
+            font-size: 1.15rem;
+            text-decoration: none;
+            border: 2.5px solid var(--green);
+            letter-spacing: 0.01em;
+            transition: background var(--transition), color var(--transition), border var(--transition), box-shadow var(--transition), transform var(--transition);
+            box-shadow: 0 2px 16px 0 rgba(59, 94, 43, 0.08);
+            cursor: pointer;
+            outline: none;
+        }
+
+        .main-button:hover,
+        .main-button:focus {
+            background: var(--white);
+            color: var(--green-dark);
+            border: 2.5px solid var(--green-dark);
+            box-shadow: 0 4px 24px 0 rgba(59, 94, 43, 0.13);
+            transform: translateY(-2px) scale(1.03);
+        }
+
+        .main-button.download {
+            background: linear-gradient(90deg, var(--accent) 80%, var(--accent-dark) 100%);
+            color: var(--black);
+            border: 2.5px solid var(--accent-dark);
+        }
+
+        .main-button.download:hover,
+        .main-button.download:focus {
+            background: var(--green);
+            color: var(--white);
+            border: 2.5px solid var(--green-dark);
+        }
+
+        .alert {
+            background: none;
+            color: var(--green-dark);
+            border-radius: 0;
+            padding: 0.7em 0 0 0;
+            font-weight: 700;
+            margin-bottom: 1.2em;
+            font-size: 1.02rem;
+            text-align: center;
+            box-shadow: none;
+            border: none;
+            display: block;
+        }
+
+        /* Remove Discord sticker styles */
+        .discord-link {
+            display: none !important;
+        }
+
+        /* --- HERO ENHANCEMENTS --- */
+        .hero-highlight {
+            display: inline-block;
+            background: var(--accent);
+            color: var(--green-dark);
+            font-weight: 700;
+            border-radius: 8px;
+            padding: 0.18em 0.7em;
+            margin: 0 0.2em;
+            font-size: 0.8em;
+            box-shadow: 0 1px 8px 0 #e2c29022;
+            letter-spacing: 0.01em;
+        }
+
+        .hero-description {
+            color: var(--muted);
+            font-size: 1.13rem;
+            margin: 1.2em 0 0.5em 0;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        @media (max-width: 900px) {
+            .navbar {
+                padding: 1.2rem 0.5em;
+            }
+
+            .hero-content {
+                padding: 2em 1em;
+            }
+
+            .hero-title {
+                font-size: 2.1rem;
+            }
+        }
+
+        @media (max-width: 700px) {
+            .main-button {
+                width: 100%;
+            }
+
+            .hero-content {
+                padding: 1.2em 0.5em;
+            }
+
+            .hero-title {
+                font-size: 1.7rem;
+            }
+        }
+
+        @media (max-width: 500px) {
+            .hero-title {
+                font-size: 1.3rem;
+            }
+        }
+
+        /* --- SECTION DIVIDER --- */
+        .section-divider {
+            width: 100%;
+            border: none;
+            border-top: 1.5px solid #e2c29044;
+            margin: 0 0 2.5em 0;
+        }
+
+        /* --- FEATURES --- */
+        .features-section {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2.5em 1em 1.5em 1em;
+            z-index: 2;
+            position: relative;
+        }
+
+        .features-title {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--green-dark);
+            margin-bottom: 1.2em;
+            text-align: center;
+            letter-spacing: 0.01em;
+        }
+
+        .features-list {
+            display: flex;
+            flex-direction: column;
+            gap: 2.2em;
+            margin: 0 auto 1.5em auto;
+            max-width: 700px;
+            padding: 0;
+            list-style: none;
+        }
+
+        .feature-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 1.3em;
+            padding: 0.7em 0;
+            border-bottom: 1px solid #e2c29033;
+        }
+
+        .feature-row:last-child {
+            border-bottom: none;
+        }
+
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            filter: drop-shadow(0 2px 8px #e2c29033);
+        }
+
+        .feature-info {
+            flex: 1;
+        }
+
+        .feature-title {
+            font-weight: 700;
+            font-size: 1.18em;
+            margin-bottom: 0.1em;
+            color: var(--black);
+            letter-spacing: 0.01em;
+        }
+
+        .feature-desc {
+            color: var(--muted);
+            font-size: 1.04em;
+        }
+
+        /* --- QUICK START --- */
+        .quickstart-section {
+            max-width: 700px;
+            margin: 2.5em auto 2em auto;
+            background: none;
+            border-radius: 0;
+            box-shadow: none;
+            border: none;
+            padding: 2.2rem 2rem 2.2rem 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .quickstart-title {
+            color: var(--green-dark);
+            font-size: 1.35rem;
+            font-weight: 900;
+            margin-bottom: 1em;
+            text-align: center;
+        }
+
+        .quickstart-section ol {
+            margin-left: 1.5em;
+            margin-bottom: 1.2em;
+        }
+
+        .quickstart-section code {
+            background: #f5e9da;
+            color: var(--green-dark);
+            border-radius: 5px;
+            padding: 0.15em 0.5em;
+            font-size: 0.98em;
+        }
+
+        /* --- SCREENSHOTS --- */
+        .screenshots-section {
+            max-width: 1200px;
+            margin: 3.5em auto 2.5em auto;
+            padding: 0 1em;
+            background: none;
+            box-shadow: none;
+            border: none;
+        }
+
+        .screenshots-title {
+            font-size: 1.45rem;
+            font-weight: 900;
+            color: var(--green-dark);
+            margin-bottom: 1.5em;
+            text-align: center;
+            letter-spacing: 0.01em;
+        }
+
+        .screenshots-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2.5em 2em;
+            align-items: end;
+        }
+
+        .screenshot-figure {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: none;
+            border: none;
+        }
+
+        .screenshot-img {
+            width: 100%;
+            max-width: 520px;
+            aspect-ratio: 16/10;
+            object-fit: cover;
+            border-radius: 16px;
+            box-shadow: 0 4px 32px 0 rgba(59, 94, 43, 0.10), 0 1.5px 12px 0 rgba(226, 194, 144, 0.07);
+            border: 2.5px solid #e2c29044;
+            background: #fff;
+            cursor: pointer;
+            transition: transform 0.22s cubic-bezier(.4, 0, .2, 1), box-shadow 0.22s cubic-bezier(.4, 0, .2, 1), border-color 0.18s;
+        }
+
+        .screenshot-img:hover,
+        .screenshot-img:focus {
+            transform: scale(1.045) translateY(-4px);
+            box-shadow: 0 12px 48px 0 rgba(59, 94, 43, 0.18), 0 2px 32px 0 rgba(226, 194, 144, 0.13);
+            border-color: var(--accent-dark);
+            z-index: 2;
+        }
+
+        .screenshot-caption {
+            color: var(--green-dark);
+            font-size: 1.08em;
+            margin: 1em 0 0.2em 0;
+            text-align: center;
+            font-weight: 600;
+            letter-spacing: 0.01em;
+            text-shadow: 0 1px 8px #e2c29022;
+        }
+
+        /* --- GALLERY MODAL --- */
+        .gallery-modal {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(24, 26, 27, 0.92);
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            transition: opacity 0.2s;
+        }
+
+        .gallery-modal.open {
+            display: flex;
+        }
+
+        .gallery-modal-img-container {
+            position: relative;
+            max-width: 90vw;
+            max-height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+        }
+
+        .gallery-modal-img {
+            max-width: 90vw;
+            max-height: 80vh;
+            border-radius: 18px;
+            box-shadow: 0 8px 48px 0 rgba(0, 0, 0, 0.25);
+            background: #fff;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .gallery-modal-caption {
+            color: #fff;
+            font-size: 1.18em;
+            margin-top: 1.2em;
+            text-align: center;
+            text-shadow: 0 2px 8px #181a1b;
+            font-weight: 600;
+            letter-spacing: 0.01em;
+        }
+
+        .gallery-modal-close {
+            position: absolute;
+            top: 2.5vh;
+            right: 3vw;
+            left: auto;
+            transform: none;
+            font-size: 2.2rem;
+            background: rgba(255, 255, 255, 0.95);
+            border: none;
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            color: var(--green-dark);
+            cursor: pointer;
+            z-index: 10;
+            box-shadow: 0 2px 12px 0 #e2c29033;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.18s, color 0.18s;
+        }
+
+        .gallery-modal-close:hover {
+            background: var(--accent);
+            color: var(--black);
+        }
+
+        .gallery-modal-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.92);
+            border: none;
+            border-radius: 50%;
+            width: 54px;
+            height: 54px;
+            font-size: 2.2rem;
+            color: var(--green-dark);
+            cursor: pointer;
+            z-index: 10;
+            box-shadow: 0 2px 12px 0 #e2c29033;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.18s, color 0.18s, box-shadow 0.18s;
+            opacity: 0.92;
+        }
+
+        .gallery-modal-arrow svg {
+            width: 28px;
+            height: 28px;
+            display: block;
+        }
+
+        .gallery-modal-arrow.left {
+            left: -70px;
+        }
+
+        .gallery-modal-arrow.right {
+            right: -70px;
+        }
+
+        .gallery-modal-arrow:hover {
+            background: var(--accent);
+            color: var(--black);
+            box-shadow: 0 4px 24px 0 #e2c29077;
+        }
+
+        @media (max-width: 900px) {
+            .gallery-modal-arrow.left {
+                left: 0;
+            }
+
+            .gallery-modal-arrow.right {
+                right: 0;
+            }
+
+            .gallery-modal-img {
+                max-width: 98vw;
+                max-height: 60vh;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .gallery-modal-arrow {
+                width: 40px;
+                height: 40px;
+                font-size: 1.5rem;
+            }
+
+            .gallery-modal-close {
+                width: 40px;
+                height: 40px;
+                font-size: 1.5rem;
+            }
+        }
+
+        /* --- FAQ --- */
+        .faq-section {
+            max-width: 800px;
+            margin: 3.5em auto 2.5em auto;
+            background: none;
+            border-radius: 0;
+            box-shadow: none;
+            border: none;
+            padding: 2.2rem 2rem 2.2rem 2rem;
+        }
+
+        .faq-title {
+            color: var(--green-dark);
+            font-size: 1.35rem;
+            font-weight: 900;
+            margin-bottom: 1.2em;
+            text-align: center;
+        }
+
+        .faq-list {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .faq-item {
+            border-bottom: 1px solid #e2c29033;
+            padding: 0.7em 0;
+        }
+
+        .faq-q {
+            font-weight: 700;
+            color: var(--black);
+            font-size: 1.09em;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: color 0.18s;
+            user-select: none;
+        }
+
+        .faq-q:hover,
+        .faq-q:focus {
+            color: var(--green-dark);
+        }
+
+        .faq-toggle-icon {
+            font-size: 1.2em;
+            margin-left: 0.7em;
+            transition: transform 0.2s;
+        }
+
+        .faq-item.open .faq-toggle-icon {
+            transform: rotate(90deg);
+        }
+
+        .faq-a {
+            margin: 0.5em 0 0.7em 0;
+            color: var(--muted);
+            font-size: 1.01em;
+            display: none;
+            animation: fadein 0.4s;
+        }
+
+        .faq-item.open .faq-a {
+            display: block;
+        }
+
+        .faq-a a {
+            color: var(--green-dark);
+            text-decoration: underline;
+            transition: color var(--transition);
+        }
+
+        .faq-a a:hover,
+        .faq-a a:focus {
+            color: var(--accent-dark);
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 1100px) {
+
+            .features-section,
+            .screenshots-section,
+            .faq-section,
+            .quickstart-section {
+                padding-left: 0.5em;
+                padding-right: 0.5em;
+            }
+
+            .hero-title {
+                font-size: 2.1rem;
+            }
+        }
+
+        @media (max-width: 700px) {
+            .features-list {
+                gap: 1.2em;
+            }
+
+            .features-section,
+            .screenshots-section,
+            .faq-section,
+            .quickstart-section {
+                padding: 1.2em 0.5em;
+            }
+
+            .main-button {
+                width: 100%;
+            }
+
+            .hero-content {
+                padding: 1.2em 0.5em;
+            }
+
+            .hero-title {
+                font-size: 1.7rem;
+            }
+
+            .feature-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5em;
+            }
+        }
+
+        @media (max-width: 500px) {
+            .hero-title {
+                font-size: 1.6rem;
+            }
+
+            .features-title,
+            .screenshots-title,
+            .faq-title {
+                font-size: 1.05rem;
+            }
+        }
+
+        /* --- SCROLLBAR --- */
+        ::-webkit-scrollbar {
+            width: 10px;
+            background: #f5e9da;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #e2c290;
+            border-radius: 8px;
+        }
+
+        ::selection {
+            background: #e2c29055;
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            background: rgba(255, 255, 255, 0.93);
+            color: var(--green-dark);
+            font-size: 1.02rem;
+            font-weight: 500;
+            text-align: center;
+            padding: 2em 1em 1.5em 1em;
+            border-top: 1.5px solid #e2c29044;
+            margin-top: 3em;
+            border-radius: 18px 18px 0 0;
+            box-shadow: 0 -2px 24px 0 rgba(0, 0, 0, 0.04);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.7em;
+        }
+
+        footer a {
+            color: var(--green-dark);
+            text-decoration: none;
+            font-weight: 700;
+            margin: 0 0.7em;
+            transition: color var(--transition), text-decoration var(--transition);
+        }
+
+        footer a:hover,
+        footer a:focus {
+            color: var(--accent-dark);
+            text-decoration: underline;
+        }
+
+        @media (max-width: 700px) {
+            footer {
+                font-size: 0.98rem;
+                padding: 1.2em 0.5em 1em 0.5em;
+                border-radius: 12px 12px 0 0;
+            }
+
+            footer a {
+                margin: 0 0.4em;
+            }
+        }
+
+        @media (max-width: 500px) {
+            footer {
+                font-size: 0.93rem;
+                padding: 1em 0.2em 0.7em 0.2em;
+            }
+        }
+
+        .download-buttons-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.7em;
+            justify-content: center;
+            margin-top: 0.7em;
+        }
+
+        .download-btn-img {
+            vertical-align: middle;
+            margin-right: 0.7em;
+            width: 1.7em;
+            height: 1.7em;
+            border-radius: 6px;
+            box-shadow: 0 1px 8px #e2c29022;
+            background: #fff;
+            object-fit: contain;
+        }
+    </style>
+    <script>
+        // --- NEW: Improved Hamburger menu toggle for mobile nav with focus trap and ESC close ---
+        // --- VERSION VARIABLE ---
+        const VERSION = "0.4.1";
+        function toggleNav(forceClose = false) {
+            var navLinks = document.getElementById('navbar-links');
+            var toggleBtn = document.getElementById('navbar-toggle');
+            var overlay = document.getElementById('navbar-overlay');
+            var isOpen = navLinks.classList.contains('open');
+            if (forceClose || isOpen) {
+                navLinks.classList.remove('open');
+                toggleBtn.classList.remove('is-active');
+                document.body.style.overflow = '';
+                // Hide overlay
+                if (overlay) overlay.classList.remove('open');
+                // Remove focus trap
+                document.removeEventListener('keydown', navFocusTrap);
+            } else {
+                navLinks.classList.add('open');
+                toggleBtn.classList.add('is-active');
+                document.body.style.overflow = 'hidden';
+                // Show overlay
+                if (overlay) overlay.classList.add('open');
+                // Focus first link
+                setTimeout(function () {
+                    var firstLink = navLinks.querySelector('a');
+                    if (firstLink) firstLink.focus();
+                }, 100);
+                // Add focus trap
+                document.addEventListener('keydown', navFocusTrap);
+            }
+        }
+        // Focus trap for mobile nav
+        function navFocusTrap(e) {
+            var navLinks = document.getElementById('navbar-links');
+            if (!navLinks.classList.contains('open')) return;
+            var focusable = navLinks.querySelectorAll('a');
+            if (!focusable.length) return;
+            var first = focusable[0], last = focusable[focusable.length - 1];
+            if (e.key === 'Tab') {
+                if (e.shiftKey && document.activeElement === first) {
+                    last.focus();
+                    e.preventDefault();
+                } else if (!e.shiftKey && document.activeElement === last) {
+                    first.focus();
+                    e.preventDefault();
+                }
+            }
+            if (e.key === 'Escape') {
+                toggleNav(true);
+                document.getElementById('navbar-toggle').focus();
+            }
+        }
+        document.addEventListener('DOMContentLoaded', function () {
+            var navLinks = document.getElementById('navbar-links');
+            var links = navLinks.querySelectorAll('a');
+            var overlay = document.getElementById('navbar-overlay');
+            // --- VERSION PATCH: Update versioned text and links ---
+            // Update alert version text
+            var alertEl = document.querySelector('.alert');
+            if (alertEl) {
+                alertEl.innerHTML = `Alpha <span id="app-version">${VERSION}</span> &mdash; Features and stability are not guaranteed.`;
+            }
+            // Update MSI download link
+            var msiBtn = document.querySelector('a.download[href*="Gambit.Pairing-"]');
+            if (msiBtn) {
+                msiBtn.href = `https://github.com/Chickaboo/Gambit-Pairing/releases/latest/download/Gambit.Pairing-${VERSION}-win64.msi`;
+            }
+            // Close menu on link click (mobile)
+            links.forEach(function (link) {
+                link.addEventListener('click', function () {
+                    toggleNav(true);
+                });
+            });
+            // Remove old click-outside logic
+            // navLinks.addEventListener('click', function(e) {
+            //     if (e.target === navLinks) toggleNav(true);
+            // });
+            // New: close menu if clicking overlay
+            if (overlay) {
+                overlay.addEventListener('click', function () {
+                    toggleNav(true);
+                });
+            }
+            // Gallery modal logic
+            const screenshots = [
+                {
+                    src: "../docs/screenshots/tournament.png",
+                    caption: "Tournament Control Tab"
+                },
+                {
+                    src: "../docs/screenshots/player.png",
+                    caption: "Player Manager Tab"
+                },
+                {
+                    src: "../docs/screenshots/standings.png",
+                    caption: "Standings Tab"
+                },
+                {
+                    src: "../docs/screenshots/crosstable.png",
+                    caption: "Cross-Table Tab"
+                },
+                {
+                    src: "../docs/screenshots/history_log.png",
+                    caption: "History Log Tab"
+                },
+                {
+                    src: "../docs/screenshots/print_dialog.png",
+                    caption: "Print Dialog"
+                }
+            ];
+            const gridImgs = document.querySelectorAll('.screenshot-img');
+            const modal = document.getElementById('gallery-modal');
+            const modalImg = document.getElementById('gallery-modal-img');
+            const modalCaption = document.getElementById('gallery-modal-caption');
+            const closeBtn = document.getElementById('gallery-modal-close');
+            const leftBtn = document.getElementById('gallery-modal-arrow-left');
+            const rightBtn = document.getElementById('gallery-modal-arrow-right');
+            let currentIdx = 0;
+
+            function openModal(idx) {
+                currentIdx = idx;
+                modalImg.src = screenshots[idx].src;
+                modalImg.alt = screenshots[idx].caption;
+                modalCaption.textContent = screenshots[idx].caption;
+                modal.classList.add('open');
+                document.body.style.overflow = 'hidden';
+            }
+            function closeModal() {
+                modal.classList.remove('open');
+                document.body.style.overflow = '';
+            }
+            function showPrev() {
+                currentIdx = (currentIdx + screenshots.length - 1) % screenshots.length;
+                openModal(currentIdx);
+            }
+            function showNext() {
+                currentIdx = (currentIdx + 1) % screenshots.length;
+                openModal(currentIdx);
+            }
+            gridImgs.forEach((img, idx) => {
+                img.addEventListener('click', () => openModal(idx));
+                img.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') openModal(idx);
+                });
+            });
+            closeBtn.addEventListener('click', closeModal);
+            leftBtn.addEventListener('click', showPrev);
+            rightBtn.addEventListener('click', showNext);
+            modal.addEventListener('click', function (e) {
+                if (e.target === modal) closeModal();
+            });
+            document.addEventListener('keydown', function (e) {
+                if (!modal.classList.contains('open')) return;
+                if (e.key === 'Escape') closeModal();
+                if (e.key === 'ArrowLeft') showPrev();
+                if (e.key === 'ArrowRight') showNext();
+            });
+
+            // FAQ accordion logic
+            document.querySelectorAll('.faq-q').forEach(function (q) {
+                q.addEventListener('click', function () {
+                    const item = q.closest('.faq-item');
+                    if (item.classList.contains('open')) {
+                        item.classList.remove('open');
+                    } else {
+                        document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+                        item.classList.add('open');
+                    }
+                });
+                q.addEventListener('keydown', function (e) {
+                    if (e.key === 'Enter' || e.key === ' ') q.click();
+                });
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div class="bg-text-gambit" aria-hidden="true">Gambit Pairing</div>
+    <header>
+        <div class="navbar">
+            <a class="navbar-logo" href="index.html">
+                <img src="../assets/logo.webp" alt=""
+                    style="height:28px;width:28px;border-radius:6px;box-shadow:0 1px 8px #e2c29022;vertical-align:middle;">
+                Gambit Pairing
+            </a>
+            <nav>
+                <button class="navbar-toggle" id="navbar-toggle" aria-label="Menu" aria-controls="navbar-links"
+                    aria-expanded="false" onclick="if (!window.__cfRLUnblockHandlers) return false; toggleNav()"
+                    data-cf-modified-0caf92011b693d9f2c128d89-="">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </button>
+                <!-- New: overlay background for mobile menu -->
+                <div class="navbar-overlay" id="navbar-overlay"></div>
+                <div class="navbar-links" id="navbar-links" role="menu">
+                    <a href="/" role="menuitem" tabindex="0">Home</a>
+                    <a href="/contact" role="menuitem" tabindex="0">Contact</a>
+                    <a href="https://github.com/Chickaboo/Gambit-Pairing" target="_blank" rel="noopener" role="menuitem"
+                        tabindex="0">GitHub</a>
+                    <a href="https://discord.gg/eEnnetMDfr" target="_blank" rel="noopener" role="menuitem"
+                        tabindex="0">Discord</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-title">Gambit Pairing</div>
+            <div class="hero-subtitle">
+                <span class="hero-highlight">Swiss-system Tournament Manager</span>
+                for Chess Clubs &amp; Schools
+            </div>
+            <div class="hero-description">
+                Fast, fair, and modern tournament management.<br>
+                <span style="color:var(--green-dark);font-weight:600;">Open source</span> and cross-platform.<br>
+                Perfect for club directors, teachers, and event organizers.
+            </div>
+            <div class="badge-row">
+                <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="MIT License">
+                <img src="https://img.shields.io/badge/Python-3.8%2B-blue.svg" alt="Python 3.8+">
+                <img src="https://img.shields.io/badge/PyQt6-Used-green.svg" alt="PyQt6">
+                <img src="https://img.shields.io/badge/Discord-Join%20Chat-blue.svg" alt="Discord">
+            </div>
+            <div class="hero-cta-row">
+                <a class="main-button" href="https://github.com/Chickaboo/Gambit-Pairing" target="_blank"
+                    rel="noopener">
+                    View on GitHub
+                </a>
+                <div class="download-buttons-row">
+                    <a class="main-button download"
+                        href="https://github.com/Chickaboo/Gambit-Pairing/releases/latest/download/Gambit.Pairing-__VERSION__-win64.msi"
+                        target="_blank" rel="noopener">
+                        <img class="download-btn-img"
+                            src="https://www.citypng.com/public/uploads/preview/hd-windows-11-logo-icon-transparent-background-701751694967888zqtluh5aaw.png"
+                            alt="Windows logo" />
+                        Windows MSI 64 bit
+                    </a>
+                    <a class="main-button download"
+                        href="https://github.com/Chickaboo/Gambit-Pairing/releases/latest/download/exe.win-amd64-3.12.zip"
+                        target="_blank" rel="noopener">
+                        <img class="download-btn-img"
+                            src="https://www.citypng.com/public/uploads/preview/hd-windows-11-logo-icon-transparent-background-701751694967888zqtluh5aaw.png"
+                            alt="Windows logo" />
+                        Windows ZIP 64 bit
+                    </a>
+                    <a class="main-button download"
+                        href="https://github.com/Chickaboo/Gambit-Pairing/archive/refs/heads/main.zip" target="_blank"
+                        rel="noopener">
+                        <img class="download-btn-img"
+                            src="https://icon2.cleanpng.com/20181117/h/kisspng-scalable-vector-graphics-javascript-python-logo-python-png-1713921357467.webp"
+                            alt="Python logo" />
+                        Python ZIP
+                    </a>
+                </div>
+            </div>
+            <div class="alert">
+                Alpha <span id="app-version"></span> &mdash; Features and stability are not guaranteed.
+            </div>
+        </div>
+    </section>
+    <hr class="section-divider">
+    <section class="features-section">
+        <div class="features-title">Why Choose Gambit Pairing?</div>
+        <ul class="features-list">
+            <li class="feature-row">
+                <div class="feature-icon">
+                    <!-- Chessboard SVG -->
+                    <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                        <rect x="2" y="2" width="36" height="36" rx="6" fill="#e2c290" stroke="#bfa36e"
+                            stroke-width="2" />
+                        <rect x="7" y="7" width="8" height="8" fill="#fff" />
+                        <rect x="15" y="7" width="8" height="8" fill="#bfa36e" />
+                        <rect x="23" y="7" width="8" height="8" fill="#fff" />
+                        <rect x="7" y="15" width="8" height="8" fill="#bfa36e" />
+                        <rect x="15" y="15" width="8" height="8" fill="#fff" />
+                        <rect x="23" y="15" width="8" height="8" fill="#bfa36e" />
+                        <rect x="7" y="23" width="8" height="8" fill="#fff" />
+                        <rect x="15" y="23" width="8" height="8" fill="#bfa36e" />
+                        <rect x="23" y="23" width="8" height="8" fill="#fff" />
+                    </svg>
+                </div>
+                <div class="feature-info">
+                    <div class="feature-title">Swiss Pairings</div>
+                    <div class="feature-desc">Automatic, fair pairings with tiebreaks and color balancing. No more
+                        manual headaches.</div>
+                </div>
+            </li>
+            <li class="feature-row">
+                <div class="feature-icon">
+                    <!-- Monitor SVG -->
+                    <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                        <rect x="6" y="10" width="28" height="18" rx="3" fill="#fff" stroke="#bfa36e"
+                            stroke-width="2" />
+                        <rect x="14" y="30" width="12" height="3" rx="1.5" fill="#bfa36e" />
+                        <rect x="17" y="34" width="6" height="2" rx="1" fill="#bfa36e" />
+                    </svg>
+                </div>
+                <div class="feature-info">
+                    <div class="feature-title">Modern UI</div>
+                    <div class="feature-desc">Clean, intuitive PyQt6 interface. Designed for clubs, schools, and event
+                        organizers.</div>
+                </div>
+            </li>
+            <li class="feature-row">
+                <div class="feature-icon">
+                    <!-- Bar Chart SVG -->
+                    <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                        <rect x="8" y="20" width="4" height="10" rx="2" fill="#bfa36e" />
+                        <rect x="16" y="14" width="4" height="16" rx="2" fill="#e2c290" />
+                        <rect x="24" y="10" width="4" height="20" rx="2" fill="#bfa36e" />
+                    </svg>
+                </div>
+                <div class="feature-info">
+                    <div class="feature-title">Standings &amp; Cross-Table</div>
+                    <div class="feature-desc">Live standings, cross-tables, and print/export options for easy reporting.
+                    </div>
+                </div>
+            </li>
+            <li class="feature-row">
+                <div class="feature-icon">
+                    <!-- History/Undo SVG -->
+                    <svg width="40" height="40" viewBox="-4 -4 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+                        <circle cx="12" cy="12" r="15" fill="#fff" stroke="#bfa36e" stroke-width="1.5" />
+
+                        <path
+                            d="M21,11a1,1,0,0,0-1,1,8.05,8.05,0,1,1-2.22-5.5h-2.4a1,1,0,0,0,0,2h4.53a1,1,0,0,0,1-1V3a1,1,0,0,0-2,0V4.77A10,10,0,1,0,22,12,1,1,0,0,0,21,11Z"
+                            fill="#bfa36e" />
+
+                    </svg>
+                </div>
+                <div class="feature-info">
+                    <div class="feature-title">Undo/Redo &amp; History</div>
+                    <div class="feature-desc">Mistake? No problem. Undo/redo rounds and view a full tournament log.
+                    </div>
+                </div>
+            </li>
+            <li class="feature-row">
+                <div class="feature-icon">
+                    <!-- Import/Export SVG -->
+                    <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                        <rect x="8" y="8" width="24" height="24" rx="5" fill="#fff" stroke="#bfa36e" stroke-width="2" />
+                        <path d="M20 13v10" stroke="#bfa36e" stroke-width="2" stroke-linecap="round" />
+                        <polyline points="16,19 20,23 24,19" fill="none" stroke="#bfa36e" stroke-width="2" />
+                    </svg>
+                </div>
+                <div class="feature-info">
+                    <div class="feature-title">Import/Export</div>
+                    <div class="feature-desc">Import players from CSV, export results and standings for sharing or
+                        archiving.</div>
+                </div>
+            </li>
+            <li class="feature-row">
+                <div class="feature-icon">
+                    <!-- Shield SVG -->
+                    <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                        <path d="M20 6l12 4v8c0 8-6 14-12 16-6-2-12-8-12-16V10l12-4z" fill="#fff" stroke="#bfa36e"
+                            stroke-width="2" />
+                        <path d="M20 16v8" stroke="#bfa36e" stroke-width="2" stroke-linecap="round" />
+                        <circle cx="20" cy="14" r="2" fill="#bfa36e" />
+                    </svg>
+                </div>
+                <div class="feature-info">
+                    <div class="feature-title">Open Source</div>
+                    <div class="feature-desc">MIT licensed. Free to use, modify, and contribute. Community-driven
+                        development.</div>
+                </div>
+            </li>
+        </ul>
+    </section>
+    <hr class="section-divider">
+    <section class="quickstart-section">
+        <div class="quickstart-title">Quick Start</div>
+        <ol>
+            <li>Install Python 3.8+ and PyQt6</li>
+            <li><code>pip install -r requirements.txt</code></li>
+            <li>Run: <code>python main.py</code></li>
+        </ol>
+        <div style="text-align:center; color:var(--muted); font-size:1em;">
+            Need help? <a href="https://discord.gg/eEnnetMDfr" target="_blank" rel="noopener" class="discord-link">Ask
+                on Discord</a>
+        </div>
+    </section>
+    <hr class="section-divider">
+    <section class="screenshots-section">
+        <div class="screenshots-title">Screenshots</div>
+        <div class="screenshots-grid">
+            <figure class="screenshot-figure">
+                <img class="screenshot-img" src="../docs/screenshots/tournament.png" alt="Tournament Control Tab"
+                    tabindex="0">
+                <figcaption class="screenshot-caption">Tournament Control Tab</figcaption>
+            </figure>
+            <figure class="screenshot-figure">
+                <img class="screenshot-img" src="../docs/screenshots/player.png" alt="Player Manager Tab" tabindex="0">
+                <figcaption class="screenshot-caption">Player Manager Tab</figcaption>
+            </figure>
+            <figure class="screenshot-figure">
+                <img class="screenshot-img" src="../docs/screenshots/standings.png" alt="Standings Tab" tabindex="0">
+                <figcaption class="screenshot-caption">Standings Tab</figcaption>
+            </figure>
+            <figure class="screenshot-figure">
+                <img class="screenshot-img" src="../docs/screenshots/crosstable.png" alt="Cross-Table Tab" tabindex="0">
+                <figcaption class="screenshot-caption">Cross-Table Tab</figcaption>
+            </figure>
+            <figure class="screenshot-figure">
+                <img class="screenshot-img" src="../docs/screenshots/history_log.png" alt="History Log Tab"
+                    tabindex="0">
+                <figcaption class="screenshot-caption">History Log Tab</figcaption>
+            </figure>
+            <figure class="screenshot-figure">
+                <img class="screenshot-img" src="../docs/screenshots/print_dialog.png" alt="Print Dialog" tabindex="0">
+                <figcaption class="screenshot-caption">Print Dialog</figcaption>
+            </figure>
+        </div>
+    </section>
+    <!-- Gallery Modal Overlay -->
+    <div class="gallery-modal" id="gallery-modal" tabindex="-1" aria-modal="true" role="dialog">
+        <button class="gallery-modal-close" id="gallery-modal-close" aria-label="Close">&times;</button>
+        <div class="gallery-modal-img-container">
+            <button class="gallery-modal-arrow left" id="gallery-modal-arrow-left" aria-label="Previous">
+                <svg viewBox="0 0 32 32" fill="none">
+                    <path d="M20 8l-8 8 8 8" stroke="currentColor" stroke-width="3" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
+            </button>
+            <img class="gallery-modal-img" id="gallery-modal-img" src="" alt="">
+            <button class="gallery-modal-arrow right" id="gallery-modal-arrow-right" aria-label="Next">
+                <svg viewBox="0 0 32 32" fill="none">
+                    <path d="M12 8l8 8-8 8" stroke="currentColor" stroke-width="3" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
+            </button>
+        </div>
+        <div class="gallery-modal-caption" id="gallery-modal-caption"></div>
+    </div>
+    <hr class="section-divider">
+    <section class="faq-section">
+        <div class="faq-title">Frequently Asked Questions</div>
+        <ul class="faq-list">
+            <li class="faq-item">
+                <div class="faq-q" tabindex="0">
+                    Is Gambit Pairing free?
+                    <span class="faq-toggle-icon">&#9654;</span>
+                </div>
+                <div class="faq-a">
+                    Yes! It's open source under the MIT license. Download, use, and share freely.
+                </div>
+            </li>
+            <li class="faq-item">
+                <div class="faq-q" tabindex="0">
+                    What platforms are supported?
+                    <span class="faq-toggle-icon">&#9654;</span>
+                </div>
+                <div class="faq-a">
+                    Windows, macOS, and Linux. Just install Python 3.8+ and PyQt6.
+                </div>
+            </li>
+            <li class="faq-item">
+                <div class="faq-q" tabindex="0">
+                    Can I import/export players?
+                    <span class="faq-toggle-icon">&#9654;</span>
+                </div>
+                <div class="faq-a">
+                    Yes, CSV import/export is supported for easy data management.
+                </div>
+            </li>
+            <li class="faq-item">
+                <div class="faq-q" tabindex="0">
+                    How do I get help or report bugs?
+                    <span class="faq-toggle-icon">&#9654;</span>
+                </div>
+                <div class="faq-a">
+                    Join our <a href="https://discord.gg/eEnnetMDfr" target="_blank" rel="noopener">Discord</a> or open
+                    an issue on <a href="https://github.com/Chickaboo/Gambit-Pairing" target="_blank"
+                        rel="noopener">GitHub</a>.
+                </div>
+            </li>
+            <li class="faq-item">
+                <div class="faq-q" tabindex="0">
+                    Can I contribute?
+                    <span class="faq-toggle-icon">&#9654;</span>
+                </div>
+                <div class="faq-a">
+                    Absolutely! Contributions are welcome. See the GitHub repo for details.
+                </div>
+            </li>
+        </ul>
+    </section>
+    <footer>
+        &copy; 2024 Gambit Pairing
+        <a href="https://github.com/Chickaboo/Gambit-Pairing" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://discord.gg/eEnnetMDfr" target="_blank" rel="noopener">Discord</a>
+        <span style="margin-left:1em; color:#e2c290;">Swiss-system Tournament Manager</span>
+    </footer>
+</body>
+
+</html>
