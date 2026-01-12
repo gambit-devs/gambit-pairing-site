@@ -1,7 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'export',
-  trailingSlash: true,
+  // Cloudflare Pages/Workers handle clean URLs well without trailing slashes.
+  trailingSlash: false,
   images: {
     unoptimized: true,
   },

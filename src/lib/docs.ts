@@ -23,7 +23,12 @@ export async function getDocFiles(type: "user" | "dev" = "dev"): Promise<DocFile
   try {
     const response = await fetch(
       `https://api.github.com/repos/${siteConfig.github.owner}/${repo}/contents/${path}`,
-      { next: { revalidate: 3600 } }
+      { 
+        next: { revalidate: 3600 },
+        headers: {
+          'User-Agent': 'Gambit-Pairing-Site-Builder'
+        }
+      }
     );
 
     if (!response.ok) {

@@ -28,7 +28,12 @@ export async function getReleases(): Promise<GithubRelease[]> {
   try {
     const response = await fetch(
       `https://api.github.com/repos/${siteConfig.github.owner}/${siteConfig.github.repo}/releases`,
-      { next: { revalidate: 3600 } } // Cache for 1 hour
+      { 
+        next: { revalidate: 3600 },
+        headers: {
+          'User-Agent': 'Gambit-Pairing-Site-Builder'
+        }
+      } // Cache for 1 hour
     );
 
     if (!response.ok) {
@@ -47,7 +52,12 @@ export async function getLatestRelease(): Promise<GithubRelease | null> {
   try {
     const response = await fetch(
       `https://api.github.com/repos/${siteConfig.github.owner}/${siteConfig.github.repo}/releases/latest`,
-      { next: { revalidate: 3600 } }
+      { 
+        next: { revalidate: 3600 },
+        headers: {
+          'User-Agent': 'Gambit-Pairing-Site-Builder'
+        }
+      }
     );
 
     if (!response.ok) {

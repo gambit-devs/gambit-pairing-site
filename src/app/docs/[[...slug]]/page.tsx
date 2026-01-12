@@ -31,22 +31,39 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
  * Enumerates user and dev docs so Next can pre-render them during `next export`.
  */
 export async function generateStaticParams() {
-  const userFiles = await getDocFiles("user");
-  const devFiles = await getDocFiles("dev");
-
   const params: { slug: string[] }[] = [];
 
   // Include the docs root
   params.push({ slug: [] });
 
-  for (const f of userFiles) {
-    const name = f.name.replace(".md", "");
-    params.push({ slug: ["user", name] });
-  }
+  try {
+    const [userFiles, devFiles] = await Promise.all([
+      getDocFiles("user"),
+      getDocFiles("dev")
+    ]);
 
-  for (const f of devFiles) {
-    const name = f.name.replace(".md", "");
-    params.push({ slug: ["dev", name] });
+    for (const f of userFiles) {
+      const name = f.name.replace(".md", "");
+      params.push({ slug: ["user", name] });
+    }
+
+    for (const f of devFiles) {
+      const name = f.name.replace(".md", "");
+      params.push({ slug: ["dev", name] });
+    }
+
+    // Ensure READMEs are always present even if API failed or files were missing
+    if (!params.some(p => p.slug[0] === "user" && p.slug[1] === "README")) {
+      params.push({ slug: ["user", "README"] });
+    }
+    if (!params.some(p => p.slug[0] === "dev" && p.slug[1] === "README")) {
+      params.push({ slug: ["dev", "README"] });
+    }
+  } catch (error) {
+    console.error("Error generating static params:", error);
+    // Fallback to minimal set of pages to avoid build failure and ensure core links work
+    params.push({ slug: ["user", "README"] });
+    params.push({ slug: ["dev", "README"] });
   }
 
   return params;
