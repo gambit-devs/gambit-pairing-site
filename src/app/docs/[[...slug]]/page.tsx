@@ -170,7 +170,7 @@ export default async function DocsPage({ params }: Props) {
                             }`}
                           >
                             <FileText className="h-4 w-4" />
-                            {fileSlug.replace(/-/g, " ").replace(/\b\w/g, l => l.toUpperCase())}
+                            {fileSlug.replace(/-/g, " ").replace(/\b\w/g, (l: string) => l.toUpperCase())}
                           </Link>
                         </li>
                       );
