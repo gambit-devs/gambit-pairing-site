@@ -234,9 +234,9 @@ export default async function DocsPage({ params }: Props) {
               {/* Content */}
               <article className="prose prose-slate dark:prose-invert max-w-none lg:prose-lg prose-headings:scroll-mt-20 prose-headings:font-semibold prose-headings:text-foreground prose-p:text-muted-foreground prose-p:leading-7 prose-strong:text-foreground prose-code:text-primary prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm prose-code:font-mono prose-pre:bg-muted prose-blockquote:border-l-4 prose-blockquote:border-primary prose-blockquote:pl-4 prose-blockquote:italic prose-table:text-sm prose-th:bg-muted prose-th:text-muted-foreground prose-th:font-medium prose-th:p-3 prose-th:text-left prose-td:p-3 prose-td:border-t prose-li:text-muted-foreground">
                 <MarkdownContent
-                  content={content}
+                  content={content!}
                   isUserDocs={isUserDocs}
-                  section={section}
+                  section={section!}
                   currentPath={currentPath}
                   docFiles={docFiles}
                   siteConfig={siteConfig}
