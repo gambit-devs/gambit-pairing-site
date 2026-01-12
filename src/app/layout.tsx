@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   title: "Gambit Pairing | Swiss Tournament Manager",
   description: "The ultimate Swiss tournament pairing software for chess organizers.",
   icons: {
-    icon: '/icons/icon.png',
+    icon: '/icons/icon.webp',
   },
 };
 

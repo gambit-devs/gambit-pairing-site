@@ -36,7 +36,7 @@ export function Hero() {
       {/* Background Image with Overlay */}
       <div className="absolute inset-0 z-0">
         <Image
-          src="/photos/chess.jpg"
+          src="/photos/chess.webp"
           alt="Chess Board Background"
           fill
           className="object-cover object-center"
