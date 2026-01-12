@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Github } from "lucide-react";
+import { Github, Package } from "lucide-react";
 import { siteConfig } from "@/lib/config";
 
 export function Footer() {
@@ -15,6 +15,10 @@ export function Footer() {
             <Link href={siteConfig.links.github} target="_blank" className="text-muted-foreground hover:text-primary transition-colors">
               <Github className="h-5 w-5" />
               <span className="sr-only">GitHub</span>
+            </Link>
+            <Link href={siteConfig.links.pypi} target="_blank" className="text-muted-foreground hover:text-primary transition-colors">
+              <Package className="h-5 w-5" />
+              <span className="sr-only">PyPI</span>
             </Link>
           </div>
         </div>
@@ -40,7 +44,7 @@ export function Footer() {
         <div>
           <h3 className="font-semibold mb-4">Community</h3>
           <ul className="space-y-2 text-sm text-muted-foreground">
-            <li><Link href={siteConfig.links.github} target="_blank" className="hover:text-primary transition-colors">GitHub</Link></li>
+            <li><Link href={siteConfig.links.githubOrg} target="_blank" className="hover:text-primary transition-colors">GitHub</Link></li>
             <li><Link href="/contribute" className="hover:text-primary transition-colors">Contribute</Link></li>
             <li><Link href={`${siteConfig.links.github}/issues`} target="_blank" className="hover:text-primary transition-colors">Report an Issue</Link></li>
           </ul>

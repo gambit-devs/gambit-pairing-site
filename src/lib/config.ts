@@ -4,7 +4,8 @@ export const siteConfig = {
   url: "https://gambit-pairing.com", // Placeholder
   links: {
     github: "https://github.com/gambit-devs/gambit-pairing",
-    pypi: "https://pypi.org/project/gambit-pairing", // Placeholder, update if known
+    githubOrg: "https://github.com/gambit-devs",
+    pypi: "https://pypi.org/org/gambit-pairing/",
     docs: "/docs",
   },
   github: {
