@@ -26,6 +26,32 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
+/**
+ * generateStaticParams - required for static export when using catch-all routes.
+ * Enumerates user and dev docs so Next can pre-render them during `next export`.
+ */
+export async function generateStaticParams() {
+  const userFiles = await getDocFiles("user");
+  const devFiles = await getDocFiles("dev");
+
+  const params: { slug: string[] }[] = [];
+
+  // Include the docs root
+  params.push({ slug: [] });
+
+  for (const f of userFiles) {
+    const name = f.name.replace(".md", "");
+    params.push({ slug: ["user", name] });
+  }
+
+  for (const f of devFiles) {
+    const name = f.name.replace(".md", "");
+    params.push({ slug: ["dev", name] });
+  }
+
+  return params;
+}
+
 export default async function DocsPage({ params }: Props) {
   const isRoot = !params.slug || params.slug.length === 0;
   const section = params.slug?.[0];
