@@ -29,7 +29,7 @@ export function Navbar() {
         <div className="flex items-center gap-2 pl-4">
           <Link href="/" className="flex items-center space-x-2">
             <Image
-              src="/designs/navbar.png"
+              src="/designs/navbar.webp"
               alt="Gambit Pairing"
               width={192}
               height={48}
@@ -91,7 +91,7 @@ export function Navbar() {
               {/* Logo */}
               <div className="mb-12">
                 <Image
-                  src="/designs/navbar.png"
+                  src="/designs/navbar.webp"
                   alt="Gambit Pairing"
                   width={192}
                   height={48}
