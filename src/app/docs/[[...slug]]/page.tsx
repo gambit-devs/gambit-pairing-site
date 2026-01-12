@@ -172,7 +172,7 @@ export default async function DocsPage({ params }: Props) {
                     <h2 className="text-2xl font-bold">Developer Docs</h2>
                   </div>
                   <p className="text-muted-foreground mb-8 min-h-[3rem]">
-                    Technical resources for contributors. Architecture, setup guides, and API references.
+                    Technical resources for contributors. Architecture and setup guides.
                   </p>
                   <div className="grid gap-2">
                     <Link 

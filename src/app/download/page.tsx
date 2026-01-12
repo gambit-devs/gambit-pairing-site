@@ -67,7 +67,7 @@ export default async function DownloadPage() {
               </div>
               <h2 className="text-2xl font-bold mb-2">Python Package</h2>
               <p className="text-muted-foreground mb-6 flex-grow">
-                Install via pip from the Python Package Index.
+                Install via pip from the Python Package Index. Python 3.9 or above is required.
               </p>
               <div className="space-y-3">
                 <div className="bg-muted p-3 rounded-md font-mono text-sm flex items-center justify-between">
