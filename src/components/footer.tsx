@@ -52,7 +52,7 @@ export function Footer() {
       </div>
       
       <div className="max-w-7xl mx-auto px-4 md:px-6 mt-12 pt-8 border-t text-center text-sm text-muted-foreground">
-        <p>© {new Date().getFullYear()} {siteConfig.github.owner}. Open Source under MIT License.</p>
+        <p>© {new Date().getFullYear()} {siteConfig.github.owner}. Open Source under GPLv3.</p>
       </div>
     </footer>
   );

@@ -1,7 +1,7 @@
 const faqs = [
   {
     question: "Is Gambit Pairing free?",
-    answer: "Yes, Gambit Pairing is completely free and open-source software released under the MIT License."
+    answer: "Yes, Gambit Pairing is completely free and open-source software released under the GPLv3."
   },
   {
     question: "What operating systems are supported?",
