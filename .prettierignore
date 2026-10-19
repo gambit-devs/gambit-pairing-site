@@ -1,0 +1,14 @@
+dist/
+node_modules/
+.next/
+.turbo/
+coverage/
+pnpm-lock.yaml
+.pnpm-store/
+AGENTS.md
+WEBSITE_CONTENT.md
+out/
+.wrangler/
+test-results/
+playwright-report/
+next-env.d.ts

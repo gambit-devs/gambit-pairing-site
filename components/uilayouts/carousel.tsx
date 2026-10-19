@@ -1,0 +1,665 @@
+"use client"
+
+import { cn } from "@/lib/utils"
+import type {
+  EmblaCarouselType,
+  EmblaEventType,
+  EmblaOptionsType,
+} from "embla-carousel"
+import useEmblaCarousel from "embla-carousel-react"
+import { AnimatePresence, motion } from "motion/react"
+import type React from "react"
+import {
+  createContext,
+  forwardRef,
+  useCallback,
+  useContext,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+} from "react"
+
+// ============= TYPES =============
+interface CarouselProps extends React.HTMLAttributes<HTMLDivElement> {
+  options?: EmblaOptionsType
+  plugins?: Parameters<typeof useEmblaCarousel>[1]
+  isScale?: boolean
+}
+
+interface CarouselContextType {
+  emblaApi: EmblaCarouselType | undefined
+  emblaThumbsApi: EmblaCarouselType | undefined
+  emblaRef: ReturnType<typeof useEmblaCarousel>[0]
+  emblaThumbsRef: ReturnType<typeof useEmblaCarousel>[0]
+  prevBtnDisabled: boolean
+  nextBtnDisabled: boolean
+  onPrevButtonClick: () => void
+  onNextButtonClick: () => void
+  selectedIndex: number
+  scrollSnaps: number[]
+  onDotButtonClick: (index: number) => void
+  scrollProgress: number
+  selectedSnap: number
+  snapCount: number
+  isScale: boolean
+  slidesArr: string[]
+  setSlidesArr: React.Dispatch<React.SetStateAction<string[]>>
+  onThumbClick: (index: number) => void
+  carouselId: string
+  orientation: "vertical" | "horizontal"
+  direction: "ltr" | "rtl" | undefined
+  handleKeyDown: (event: React.KeyboardEvent<HTMLDivElement>) => void
+}
+
+// ============= CONTEXT =============
+const CarouselContext = createContext<CarouselContextType | undefined>(
+  undefined
+)
+
+export const useCarousel = () => {
+  const context = useContext(CarouselContext)
+  if (!context) {
+    throw new Error("useCarousel must be used within a Carousel component")
+  }
+  return context
+}
+
+// ============= UTILITIES =============
+const TWEEN_FACTOR_BASE = 0.52
+const numberWithinRange = (number: number, min: number, max: number): number =>
+  Math.min(Math.max(number, min), max)
+
+// ============= MAIN CAROUSEL COMPONENT =============
+export const Carousel = forwardRef<HTMLDivElement, CarouselProps>(
+  (
+    {
+      children,
+      options = {},
+      plugins = [],
+      className,
+      isScale = false,
+      dir,
+      ...props
+    },
+    ref
+  ) => {
+    const carouselId = useId()
+    const [slidesArr, setSlidesArr] = useState<string[]>([])
+
+    const orientation = options.axis === "y" ? "vertical" : "horizontal"
+    const direction = options.direction ?? (dir as "ltr" | "rtl" | undefined)
+
+    // Main carousel
+    const [emblaRef, emblaApi] = useEmblaCarousel(
+      {
+        ...options,
+        axis: orientation === "vertical" ? "y" : "x",
+        direction,
+      },
+      plugins
+    )
+
+    // Thumbnails carousel
+    const [emblaThumbsRef, emblaThumbsApi] = useEmblaCarousel({
+      containScroll: "keepSnaps",
+      dragFree: true,
+      axis: orientation === "vertical" ? "y" : "x",
+      direction,
+    })
+
+    // State
+    const [prevBtnDisabled, setPrevBtnDisabled] = useState(true)
+    const [nextBtnDisabled, setNextBtnDisabled] = useState(true)
+    const [selectedIndex, setSelectedIndex] = useState(0)
+    const [scrollSnaps, setScrollSnaps] = useState<number[]>([])
+    const [scrollProgress, setScrollProgress] = useState(0)
+    const [snapCount, setSnapCount] = useState(0)
+
+    // Navigation callbacks
+    const onPrevButtonClick = useCallback(() => {
+      emblaApi?.scrollPrev()
+    }, [emblaApi])
+
+    const onNextButtonClick = useCallback(() => {
+      emblaApi?.scrollNext()
+    }, [emblaApi])
+
+    const onDotButtonClick = useCallback(
+      (index: number) => {
+        emblaApi?.scrollTo(index)
+      },
+      [emblaApi]
+    )
+
+    const onThumbClick = useCallback(
+      (index: number) => {
+        if (!emblaApi || !emblaThumbsApi) return
+        emblaApi.scrollTo(index)
+      },
+      [emblaApi, emblaThumbsApi]
+    )
+
+    // Keyboard navigation
+    const handleKeyDown = useCallback(
+      (event: React.KeyboardEvent<HTMLDivElement>) => {
+        if (!emblaApi) return
+        switch (event.key) {
+          case "ArrowLeft":
+            event.preventDefault()
+            if (orientation === "horizontal") {
+              if (direction === "rtl") onNextButtonClick()
+              else onPrevButtonClick()
+            }
+            break
+          case "ArrowRight":
+            event.preventDefault()
+            if (orientation === "horizontal") {
+              if (direction === "rtl") onPrevButtonClick()
+              else onNextButtonClick()
+            }
+            break
+          case "ArrowUp":
+            event.preventDefault()
+            if (orientation === "vertical") onPrevButtonClick()
+            break
+          case "ArrowDown":
+            event.preventDefault()
+            if (orientation === "vertical") onNextButtonClick()
+            break
+        }
+      },
+      [emblaApi, orientation, direction, onPrevButtonClick, onNextButtonClick]
+    )
+
+    // Selection handler
+    const onSelect = useCallback(() => {
+      if (!emblaApi) return
+      setSelectedIndex(emblaApi.selectedScrollSnap())
+      setPrevBtnDisabled(!emblaApi.canScrollPrev())
+      setNextBtnDisabled(!emblaApi.canScrollNext())
+      emblaThumbsApi?.scrollTo(emblaApi.selectedScrollSnap())
+    }, [emblaApi, emblaThumbsApi])
+
+    // Scroll progress handler
+    const onScroll = useCallback((emblaApi: EmblaCarouselType) => {
+      const progress = Math.max(0, Math.min(1, emblaApi.scrollProgress()))
+      setScrollProgress(progress * 100)
+    }, [])
+
+    // Scale animation for isScale mode
+    const tweenFactor = useRef(0)
+    const tweenNodes = useRef<HTMLElement[]>([])
+
+    const setTweenNodes = useCallback(
+      (emblaApi: EmblaCarouselType): void => {
+        if (!isScale) return
+        tweenNodes.current = emblaApi
+          .slideNodes()
+          .map((slideNode) =>
+            slideNode.querySelector(".slider_content")
+          ) as HTMLElement[]
+      },
+      [isScale]
+    )
+
+    const setTweenFactor = useCallback(
+      (emblaApi: EmblaCarouselType) => {
+        if (!isScale) return
+        tweenFactor.current =
+          TWEEN_FACTOR_BASE * emblaApi.scrollSnapList().length
+      },
+      [isScale]
+    )
+
+    const tweenScale = useCallback(
+      (emblaApi: EmblaCarouselType, eventName?: EmblaEventType) => {
+        if (!isScale) return
+        const engine = emblaApi.internalEngine()
+        const scrollProgress = emblaApi.scrollProgress()
+        const slidesInView = emblaApi.slidesInView()
+        const isScrollEvent = eventName === "scroll"
+
+        emblaApi.scrollSnapList().forEach((scrollSnap, snapIndex) => {
+          let diffToTarget = scrollSnap - scrollProgress
+          const slidesInSnap = engine.slideRegistry[snapIndex] ?? []
+
+          slidesInSnap.forEach((slideIndex) => {
+            if (isScrollEvent && !slidesInView.includes(slideIndex)) return
+
+            if (engine.options.loop) {
+              engine.slideLooper.loopPoints.forEach((loopItem) => {
+                const target = loopItem.target()
+                if (slideIndex === loopItem.index && target !== 0) {
+                  const sign = Math.sign(target)
+                  if (sign === -1) {
+                    diffToTarget = scrollSnap - (1 + scrollProgress)
+                  }
+                  if (sign === 1) {
+                    diffToTarget = scrollSnap + (1 - scrollProgress)
+                  }
+                }
+              })
+            }
+
+            const tweenValue = 1 - Math.abs(diffToTarget * tweenFactor.current)
+            const scale = numberWithinRange(tweenValue, 0, 1).toString()
+            const tweenNode = tweenNodes.current[slideIndex]
+            if (tweenNode) {
+              tweenNode.style.transform = `scale(${scale})`
+            }
+          })
+        })
+      },
+      [isScale]
+    )
+
+    // Effects
+    useEffect(() => {
+      if (!emblaApi) return
+      // Embla is an external system; initialize its derived UI state on mount.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setScrollSnaps(emblaApi.scrollSnapList())
+      setSnapCount(emblaApi.scrollSnapList().length)
+      onSelect()
+      onScroll(emblaApi)
+
+      emblaApi
+        .on("reInit", onSelect)
+        .on("select", onSelect)
+        .on("reInit", onScroll)
+        .on("scroll", onScroll)
+
+      if (isScale) {
+        setTweenNodes(emblaApi)
+        setTweenFactor(emblaApi)
+        tweenScale(emblaApi)
+        emblaApi
+          .on("reInit", setTweenNodes)
+          .on("reInit", setTweenFactor)
+          .on("reInit", tweenScale)
+          .on("scroll", tweenScale)
+      }
+    }, [
+      emblaApi,
+      onSelect,
+      onScroll,
+      isScale,
+      setTweenNodes,
+      setTweenFactor,
+      tweenScale,
+    ])
+
+    return (
+      <CarouselContext.Provider
+        value={{
+          emblaApi,
+          emblaThumbsApi,
+          emblaRef,
+          emblaThumbsRef,
+          prevBtnDisabled,
+          nextBtnDisabled,
+          onPrevButtonClick,
+          onNextButtonClick,
+          selectedIndex,
+          scrollSnaps,
+          onDotButtonClick,
+          scrollProgress,
+          selectedSnap: selectedIndex,
+          snapCount,
+          isScale,
+          slidesArr,
+          setSlidesArr,
+          onThumbClick,
+          carouselId,
+          orientation,
+          direction,
+          handleKeyDown,
+        }}
+      >
+        <div
+          ref={ref}
+          tabIndex={0}
+          onKeyDownCapture={handleKeyDown}
+          className={cn("relative w-full focus:outline-hidden", className)}
+          dir={direction}
+          {...props}
+        >
+          {children}
+        </div>
+      </CarouselContext.Provider>
+    )
+  }
+)
+
+Carousel.displayName = "Carousel"
+
+// ============= SLIDER CONTAINER =============
+export const SliderContainer = forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, children, ...props }, ref) => {
+  const { emblaRef, orientation } = useCarousel()
+
+  return (
+    <div ref={emblaRef} className="overflow-hidden" {...props}>
+      <div
+        ref={ref}
+        className={cn(
+          "flex",
+          orientation === "vertical" ? "flex-col" : "flex-row",
+          className
+        )}
+        style={{ touchAction: "pan-y pinch-zoom" }}
+      >
+        {children}
+      </div>
+    </div>
+  )
+})
+
+SliderContainer.displayName = "SliderContainer"
+
+// ============= SLIDER ITEM =============
+interface SliderProps extends React.HTMLAttributes<HTMLDivElement> {
+  thumbnailSrc?: string
+}
+
+export const Slider = forwardRef<HTMLDivElement, SliderProps>(
+  ({ children, className, thumbnailSrc, ...props }, ref) => {
+    const { isScale, setSlidesArr } = useCarousel()
+
+    useEffect(() => {
+      if (thumbnailSrc) {
+        setSlidesArr((prev) => {
+          if (!prev.includes(thumbnailSrc)) {
+            return [...prev, thumbnailSrc]
+          }
+          return prev
+        })
+      }
+    }, [thumbnailSrc, setSlidesArr])
+
+    return (
+      <div
+        ref={ref}
+        className={cn(
+          "min-w-0 shrink-0 grow-0",
+          // orientation === 'vertical' ? 'pb-1' : 'pr-1',
+          className
+        )}
+        {...props}
+      >
+        {isScale ? <div className="slider_content">{children}</div> : children}
+      </div>
+    )
+  }
+)
+
+Slider.displayName = "Slider"
+
+// ============= NAVIGATION BUTTONS =============
+export const SliderPrevButton = forwardRef<
+  HTMLButtonElement,
+  React.ButtonHTMLAttributes<HTMLButtonElement>
+>(({ children, className, ...props }, ref) => {
+  const { onPrevButtonClick, prevBtnDisabled } = useCarousel()
+
+  return (
+    <button
+      ref={ref}
+      type="button"
+      onClick={onPrevButtonClick}
+      disabled={prevBtnDisabled}
+      className={cn("", className)}
+      {...props}
+    >
+      {children}
+    </button>
+  )
+})
+
+SliderPrevButton.displayName = "SliderPrevButton"
+
+export const SliderNextButton = forwardRef<
+  HTMLButtonElement,
+  React.ButtonHTMLAttributes<HTMLButtonElement>
+>(({ children, className, ...props }, ref) => {
+  const { onNextButtonClick, nextBtnDisabled } = useCarousel()
+
+  return (
+    <button
+      ref={ref}
+      type="button"
+      onClick={onNextButtonClick}
+      disabled={nextBtnDisabled}
+      className={cn("", className)}
+      {...props}
+    >
+      {children}
+    </button>
+  )
+})
+
+SliderNextButton.displayName = "SliderNextButton"
+
+// ============= PROGRESS BAR =============
+export const SliderProgress = forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => {
+  const { scrollProgress } = useCarousel()
+
+  return (
+    <div
+      ref={ref}
+      className={cn(
+        "relative h-2 w-96 max-w-full overflow-hidden rounded-md bg-foreground/30",
+        className
+      )}
+      {...props}
+    >
+      <div
+        className="absolute top-0 bottom-0 -left-full w-full bg-foreground transition-transform"
+        style={{ transform: `translate3d(${scrollProgress}%,0px,0px)` }}
+      />
+    </div>
+  )
+})
+
+SliderProgress.displayName = "SliderProgress"
+
+// ============= SNAP DISPLAY =============
+export const SliderSnapDisplay = forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => {
+  const { selectedSnap, snapCount } = useCarousel()
+  const direction = 1
+
+  return (
+    <div
+      ref={ref}
+      className={cn(
+        "flex items-center gap-1 overflow-hidden mix-blend-difference",
+        className
+      )}
+      {...props}
+    >
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={selectedSnap}
+          custom={direction}
+          // @ts-expect-error Motion accepts a function variant with a custom value.
+          initial={(d: number) => ({ y: d * 20, opacity: 0 })}
+          animate={{ y: 0, opacity: 1 }}
+          // @ts-expect-error Motion accepts a function variant with a custom value.
+          exit={(d: number) => ({ y: d * -20, opacity: 0 })}
+        >
+          {selectedSnap + 1}
+        </motion.div>
+      </AnimatePresence>
+      <span>/ {snapCount}</span>
+    </div>
+  )
+})
+
+SliderSnapDisplay.displayName = "SliderSnapDisplay"
+
+// ============= DOT BUTTONS =============
+interface SliderDotButtonProps extends React.HTMLAttributes<HTMLDivElement> {
+  activeClass?: string
+}
+
+export const SliderDotButton = forwardRef<HTMLDivElement, SliderDotButtonProps>(
+  ({ className, activeClass, ...props }, ref) => {
+    const {
+      selectedIndex,
+      scrollSnaps,
+      orientation,
+      onDotButtonClick,
+      carouselId,
+    } = useCarousel()
+
+    return (
+      <div ref={ref} className={cn("flex gap-2", className)} {...props}>
+        {scrollSnaps.map((_, index) => (
+          <button
+            key={`${carouselId}-dot-${_}`}
+            type="button"
+            onClick={() => onDotButtonClick(index)}
+            className={cn(
+              "relative m-0 inline-flex p-0",
+              orientation === "vertical" ? "h-6 w-1" : "h-1 w-6"
+            )}
+          >
+            <div
+              className={cn(
+                "rounded-full bg-foreground/30",
+                orientation === "vertical" ? "h-6 w-1" : "h-1 w-6"
+              )}
+            />
+            {index === selectedIndex && (
+              <AnimatePresence mode="wait">
+                <motion.div
+                  transition={{
+                    layout: {
+                      duration: 0.4,
+                      ease: "easeInOut",
+                      delay: 0.04,
+                    },
+                  }}
+                  layoutId={`hover-${carouselId}`}
+                  className={cn(
+                    "absolute top-0 left-0 z-3 h-full w-full rounded-full bg-foreground",
+                    orientation === "vertical" ? "h-6 w-1" : "h-1 w-6",
+                    activeClass
+                  )}
+                />
+              </AnimatePresence>
+            )}
+          </button>
+        ))}
+      </div>
+    )
+  }
+)
+
+SliderDotButton.displayName = "SliderDotButton"
+
+// ============= CAROUSEL INDICATORS =============
+interface CarouselIndicatorProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  index: number
+}
+
+export const CarouselIndicator = forwardRef<
+  HTMLButtonElement,
+  CarouselIndicatorProps
+>(({ className, index, ...props }, ref) => {
+  const { selectedIndex, onDotButtonClick } = useCarousel()
+  const isActive = selectedIndex === index
+
+  return (
+    <button
+      ref={ref}
+      type="button"
+      onClick={() => onDotButtonClick(index)}
+      className={cn(
+        "h-1.5 w-6 rounded-full transition-colors",
+        isActive ? "bg-primary" : "bg-primary/50",
+        className
+      )}
+      aria-label={`Go to slide ${index + 1}`}
+      {...props}
+    >
+      <span className="sr-only">Slide {index + 1}</span>
+    </button>
+  )
+})
+
+CarouselIndicator.displayName = "CarouselIndicator"
+
+// Auto-generate thumbnails from slides
+export const ThumbsSlider = forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement> & {
+    thumbsClassName?: string
+    thumbsSliderClassName?: string
+  }
+>(({ className, thumbsClassName, thumbsSliderClassName, ...props }, ref) => {
+  const {
+    slidesArr,
+    selectedIndex,
+    onThumbClick,
+    orientation,
+    emblaThumbsRef,
+  } = useCarousel()
+
+  if (slidesArr.length === 0) return null
+
+  return (
+    <div
+      ref={emblaThumbsRef}
+      className={cn("overflow-hidden", className)}
+      {...props}
+    >
+      <div
+        ref={ref}
+        className={cn(
+          "flex h-[300px] gap-2",
+          orientation === "vertical" ? "flex-col" : "flex-row",
+          thumbsClassName
+        )}
+      >
+        {slidesArr.map((src, index) => (
+          <div
+            key={src}
+            onClick={() => onThumbClick(index)}
+            className={cn(
+              "shrink-0 cursor-pointer transition-opacity",
+              "rounded-md border-2",
+              orientation === "vertical"
+                ? "h-20 basis-[15%]"
+                : "h-24 basis-[15%]",
+              selectedIndex === index
+                ? "border-primary opacity-100"
+                : "border-transparent opacity-30",
+              thumbsSliderClassName
+            )}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={src}
+              alt={`Thumbnail ${index + 1}`}
+              className="h-full w-full rounded-md object-cover"
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+})
+
+ThumbsSlider.displayName = "ThumbsSlider"
+
+// Alias for backward compatibility

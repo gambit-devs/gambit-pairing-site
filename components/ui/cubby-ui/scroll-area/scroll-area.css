@@ -1,0 +1,88 @@
+/* -------------------------------------------------------------------------------------------------
+ * Scroll-Driven Animations for Native Scroll Fade Edges (Progressive Enhancement)
+ * Chrome 115+, Safari 26+ (future), Firefox flag-only
+ * Fallback: Static fade on both ends of each configured edge
+ * -------------------------------------------------------------------------------------------------*/
+
+/* Animatable custom properties for fade amounts (length-percentage so the
+ * fade size can be a percentage of the container, e.g. min(12%, 2.5rem)) */
+@property --scroll-fade-top {
+  syntax: "<length-percentage>";
+  inherits: false;
+  initial-value: 0px;
+}
+
+@property --scroll-fade-bottom {
+  syntax: "<length-percentage>";
+  inherits: false;
+  initial-value: 0px;
+}
+
+@property --scroll-fade-left {
+  syntax: "<length-percentage>";
+  inherits: false;
+  initial-value: 0px;
+}
+
+@property --scroll-fade-right {
+  syntax: "<length-percentage>";
+  inherits: false;
+  initial-value: 0px;
+}
+
+/**
+ * Per-edge fade reveal animations.
+ *
+ * Each edge animates a single fade amount between 0 and --scroll-fade-size.
+ * The scroll distance over which the fade eases in/out is driven by
+ * animation-range (set on the element), not by keyframe percentages, so the
+ * reveal is a fixed pixel distance independent of content length.
+ */
+@keyframes scroll-fade-reveal-top {
+  from {
+    --scroll-fade-top: 0px;
+  }
+  to {
+    --scroll-fade-top: var(--scroll-fade-size);
+  }
+}
+
+@keyframes scroll-fade-reveal-bottom {
+  from {
+    --scroll-fade-bottom: var(--scroll-fade-size);
+  }
+  to {
+    --scroll-fade-bottom: 0px;
+  }
+}
+
+@keyframes scroll-fade-reveal-left {
+  from {
+    --scroll-fade-left: 0px;
+  }
+  to {
+    --scroll-fade-left: var(--scroll-fade-size);
+  }
+}
+
+@keyframes scroll-fade-reveal-right {
+  from {
+    --scroll-fade-right: var(--scroll-fade-size);
+  }
+  to {
+    --scroll-fade-right: 0px;
+  }
+}
+
+/**
+ * Fallback for browsers without scroll-driven animations: a static fade on
+ * each configured edge. Without scroll awareness both ends stay faded.
+ */
+@supports not (animation-timeline: scroll()) {
+  [data-native-scroll] {
+    --scroll-fade-top: var(--scroll-fade-size);
+    --scroll-fade-bottom: var(--scroll-fade-size);
+    --scroll-fade-left: var(--scroll-fade-size);
+    --scroll-fade-right: var(--scroll-fade-size);
+  }
+}
