@@ -53,6 +53,13 @@ Authenticate Wrangler with `npx wrangler login` before the first deployment.
 The deployment is intentionally configured as an asset-only Worker; no Pages
 project or runtime API is required.
 
+## Download data
+
+The download page asks the GitHub API for the newest release in each visitor's
+browser, so new releases appear without a rebuild. The release from the last
+build is shown first and kept if that request fails. Other pages, including the
+homepage and changelog, still use the release from the last build.
+
 ## Repository layout
 
 - `app/` — Next route entrypoints, global styles, and local fonts
@@ -60,5 +67,5 @@ project or runtime API is required.
 - `components/download/` — download-page sections
 - `components/navigation/` and `components/ui/` — reusable presentation code
 - `lib/site/` — shared site configuration and platform/FAQ data
-- `lib/github/` — server-only build-time GitHub client and normalizers
+- `lib/github/` — build-time GitHub client, normalizers, and the browser refresh used by the download page
 - `tests/` — pure unit tests and browser route/visual tests

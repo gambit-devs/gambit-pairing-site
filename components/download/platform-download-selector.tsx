@@ -1,6 +1,6 @@
 "use client"
 
-import { Fragment, useState } from "react"
+import { Fragment, useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { Download, ExternalLink } from "lucide-react"
 
@@ -10,6 +10,7 @@ import {
   CodeBlockHeader,
   CodeBlockPre,
 } from "@/components/ui/cubby-ui/code-block/code-block"
+import { fetchLatestRelease } from "@/lib/github/latest-release-browser"
 import type { LatestRelease } from "@/lib/github/types"
 import {
   getPlatformDownload,
@@ -231,9 +232,23 @@ export function PlatformDownloadSelector({
   const router = useRouter()
   const [selectedFilter, setSelectedFilter] =
     useState<PlatformFilter>("windows")
-  const releasedOn = RELEASE_DATE_FORMAT.format(
-    new Date(latestRelease.publishedAt)
-  )
+  // The build-time release is shown first; the newest release replaces it once
+  // GitHub answers, so the buttons follow new releases without a rebuild.
+  const [release, setRelease] = useState(latestRelease)
+
+  useEffect(() => {
+    const controller = new AbortController()
+
+    fetchLatestRelease(controller.signal)
+      .then(setRelease)
+      .catch(() => {
+        // Keep the build-time release when GitHub cannot be reached.
+      })
+
+    return () => controller.abort()
+  }, [])
+
+  const releasedOn = RELEASE_DATE_FORMAT.format(new Date(release.publishedAt))
   const selectedLabel =
     FILTER_OPTIONS.find(({ value }) => value === selectedFilter)?.label ?? ""
   const visiblePlatforms =
@@ -276,9 +291,8 @@ export function PlatformDownloadSelector({
     <div>
       <section aria-label="Stable version">
         <p className="text-muted-foreground">
-          Version{" "}
-          <strong className="text-foreground">{latestRelease.version}</strong> ·{" "}
-          {releasedOn}
+          Version <strong className="text-foreground">{release.version}</strong>{" "}
+          · {releasedOn}
         </p>
         <p className="mt-2 flex flex-wrap gap-x-4 text-sm text-muted-foreground">
           {RELEASE_LINKS.map((link) => (
@@ -332,7 +346,7 @@ export function PlatformDownloadSelector({
         <PlatformSection
           key={platform}
           platform={platform}
-          latestRelease={latestRelease}
+          latestRelease={release}
           onDirectDownload={handleDirectDownload}
           isFirst={index === 0}
         />

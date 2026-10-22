@@ -44,10 +44,78 @@ type PlatformDownload = {
   options: DownloadOption[]
 }
 
+type NativePlatform = "windows" | "macos" | "linux"
+
+type NativePackage = {
+  id: string
+  pattern: RegExp
+  name: string
+  description: string
+  installType: string
+  architecture: string
+}
+
 const UNKNOWN_VALUE = "—"
 const PYTHON_REQUIREMENT = "Python 3.9 or newer"
 const PYTHON_INSTALL_COMMAND = "python3 -m pip install gambit-pairing"
 const PYTHON_LAUNCH_COMMAND = "gambit-pairing"
+
+// Files published by .github/workflows/build-release.yml. Velopack names come
+// from PackId "GambitPairing" on the "win" and "linux" channels; archives use
+// "gambit-pairing-<version>-<artifact>". Every other release asset, including
+// update packages, feed files, checksums and RELEASES, is deliberately omitted.
+const NATIVE_PACKAGES: Record<NativePlatform, NativePackage[]> = {
+  windows: [
+    {
+      id: "windows-installer",
+      pattern: /^GambitPairing-win-Setup\.exe$/,
+      name: "Windows x64 installer",
+      description: "Recommended for most Windows users.",
+      installType: "Setup installer",
+      architecture: "x86_64",
+    },
+    {
+      id: "windows-portable",
+      pattern: /^gambit-pairing-.+-windows-x64-portable\.zip$/,
+      name: "Windows x64 portable",
+      description:
+        "Extract the archive and run Gambit Pairing without installing it.",
+      installType: "ZIP archive",
+      architecture: "x86_64",
+    },
+  ],
+  macos: [
+    {
+      id: "macos-archive",
+      pattern: /^gambit-pairing-.+-macos-arm64\.tar\.gz$/,
+      name: "macOS Apple silicon archive",
+      description:
+        "Extract the archive and run gambit-pairing from the extracted folder.",
+      installType: "tar.gz archive",
+      architecture: "arm64",
+    },
+  ],
+  linux: [
+    {
+      id: "linux-appimage",
+      pattern: /^GambitPairing\.AppImage$/,
+      name: "Linux x86_64 AppImage",
+      description:
+        "A single file that runs without installation. Mark it executable first.",
+      installType: "AppImage",
+      architecture: "x86_64",
+    },
+    {
+      id: "linux-archive",
+      pattern: /^gambit-pairing-.+-linux-x86_64\.tar\.gz$/,
+      name: "Linux x86_64 archive",
+      description:
+        "Extract the archive and run gambit-pairing from the extracted folder.",
+      installType: "tar.gz archive",
+      architecture: "x86_64",
+    },
+  ],
+}
 
 export const RELEASE_LINKS: DownloadLink[] = [
   {
@@ -97,49 +165,6 @@ function formatFileSize(bytes: number) {
   return `${megabytes.toFixed(megabytes >= 100 ? 0 : 1)} MB`
 }
 
-function normalizedName(asset: ReleaseAsset) {
-  return asset.name.toLowerCase()
-}
-
-function matchesPlatform(asset: ReleaseAsset, platform: PlatformSlug) {
-  const name = normalizedName(asset)
-
-  if (platform === "windows") {
-    return (
-      /\.(exe|msi|zip)$/.test(name) &&
-      /(windows?|win32|win64|x86_64|amd64|x64|portable|installer|setup)/.test(
-        name
-      )
-    )
-  }
-
-  if (platform === "macos") {
-    return (
-      /\.(dmg|pkg)$/.test(name) ||
-      (/\.zip$/.test(name) &&
-        /(macos?|osx|darwin|apple|silicon|arm64|aarch64|universal)/.test(name))
-    )
-  }
-
-  return (
-    /\.(appimage|deb|rpm|tar\.gz|tar\.xz)$/.test(name) || /linux/.test(name)
-  )
-}
-
-function detectArchitecture(name: string, fallback: string) {
-  const normalized = name.toLowerCase()
-
-  if (/universal/.test(normalized)) return "Universal"
-  if (/(arm64|aarch64|apple[-_ ]?silicon|m1|m2|m3|m4)/.test(normalized)) {
-    return "arm64"
-  }
-  if (/(x86_64|x86-64|amd64|x64|win64|intel)/.test(normalized)) {
-    return "x86_64"
-  }
-
-  return fallback
-}
-
 function directOption({
   asset,
   id,
@@ -162,7 +187,7 @@ function directOption({
     name,
     description,
     installType,
-    architecture: detectArchitecture(asset.name, architecture),
+    architecture,
     size: formatFileSize(asset.size),
     status: "direct",
     actionLabel: "Download",
@@ -220,87 +245,27 @@ function unavailableOption(
   }
 }
 
-function windowsOptions(release: LatestRelease) {
-  const assets = release.assets.filter((asset) =>
-    matchesPlatform(asset, "windows")
-  )
-  const installer = assets.find(
-    (asset) =>
-      /\.(msi|exe)$/.test(normalizedName(asset)) &&
-      !/(portable|standalone)/.test(normalizedName(asset))
-  )
-  const portable = assets.find((asset) =>
-    /(portable|standalone)/.test(normalizedName(asset))
-  )
-  const directory = assets.find(
-    (asset) =>
-      /\.zip$/.test(normalizedName(asset)) &&
-      /(directory|archive)/.test(normalizedName(asset))
-  )
-  const usedAssets = new Set(
-    [installer, portable, directory]
-      .filter((asset): asset is ReleaseAsset => Boolean(asset))
-      .map((asset) => asset.name)
-  )
+function nativePackageOptions(
+  release: LatestRelease,
+  platform: NativePlatform
+) {
   const options: DownloadOption[] = []
 
-  if (installer) {
-    options.push(
-      directOption({
-        asset: installer,
-        id: "windows-installer",
-        name: "Windows x64 installer",
-        description: "Recommended for most Windows users.",
-        installType: "MSI installer",
-        architecture: "x86_64",
-        recommended: true,
-      })
-    )
+  for (const { pattern, ...details } of NATIVE_PACKAGES[platform]) {
+    const asset = release.assets.find(({ name }) => pattern.test(name))
+
+    if (asset) {
+      options.push(
+        directOption({
+          asset,
+          ...details,
+          recommended: options.length === 0,
+        })
+      )
+    }
   }
 
-  if (portable) {
-    options.push(
-      directOption({
-        asset: portable,
-        id: "windows-portable",
-        name: "Windows x64 portable",
-        description: "Run Gambit Pairing without installing it.",
-        installType: "Portable executable",
-        architecture: "x86_64",
-        recommended: options.length === 0,
-      })
-    )
-  }
-
-  if (directory) {
-    options.push(
-      directOption({
-        asset: directory,
-        id: "windows-directory",
-        name: "Windows x64 directory",
-        description: "Extract the archive and run the application in place.",
-        installType: "ZIP archive",
-        architecture: "x86_64",
-        recommended: options.length === 0,
-      })
-    )
-  }
-
-  for (const asset of assets.filter(({ name }) => !usedAssets.has(name))) {
-    options.push(
-      directOption({
-        asset,
-        id: `windows-${asset.name}`,
-        name: asset.name,
-        description: "Additional asset from the latest GitHub release.",
-        installType: "Release asset",
-        architecture: "x86_64",
-        recommended: options.length === 0,
-      })
-    )
-  }
-
-  return options.length > 0 ? options : [unavailableOption("Windows")]
+  return options
 }
 
 function pythonPackageOption(platform: PlatformSlug, recommended: boolean) {
@@ -328,38 +293,6 @@ function buildFromSourceOption(platform: PlatformSlug) {
   })
 }
 
-function nativeUnixOptions(
-  release: LatestRelease,
-  platform: "macos" | "linux"
-) {
-  return release.assets
-    .filter((asset) => matchesPlatform(asset, platform))
-    .map((asset, index) => {
-      const name = normalizedName(asset)
-      const installType = /\.dmg$/.test(name)
-        ? "Disk image"
-        : /\.pkg$/.test(name)
-          ? "Installer package"
-          : /appimage/.test(name)
-            ? "AppImage"
-            : /\.deb$/.test(name)
-              ? "Debian package"
-              : /\.rpm$/.test(name)
-                ? "RPM package"
-                : "Release asset"
-
-      return directOption({
-        asset,
-        id: `${platform}-${asset.name}`,
-        name: asset.name,
-        description: "Native package from the latest GitHub release.",
-        installType,
-        architecture: "x86_64",
-        recommended: index === 0,
-      })
-    })
-}
-
 export function getPlatformDownload(
   platform: PlatformSlug,
   release: LatestRelease
@@ -381,18 +314,20 @@ export function getPlatformDownload(
   }
 
   if (platform === "windows") {
+    const options = nativePackageOptions(release, platform)
+
     return {
       label: "Windows",
       description:
         "Use the installer for a standard setup, or choose a portable build.",
       requirements: ["64-bit Windows"],
       installation:
-        "Download the MSI, open it, and follow the installer prompts.",
-      options: windowsOptions(release),
+        "Download the Setup.exe, open it, and follow the installer prompts.",
+      options: options.length > 0 ? options : [unavailableOption("Windows")],
     }
   }
 
-  const nativeOptions = nativeUnixOptions(release, platform)
+  const nativeOptions = nativePackageOptions(release, platform)
   const platformLabel = platform === "macos" ? "macOS" : "Linux"
   const hasNativePackage = nativeOptions.length > 0
 

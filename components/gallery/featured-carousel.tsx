@@ -9,6 +9,7 @@ import {
   SliderDotButton,
   SliderNextButton,
   SliderPrevButton,
+  useCarousel,
 } from "@/components/uilayouts/carousel"
 import type { EmblaOptionsType } from "embla-carousel"
 import Autoplay from "embla-carousel-autoplay"
@@ -44,28 +45,12 @@ export function FeaturedCarousel({ onSelect }: FeaturedCarouselProps) {
     >
       <SliderContainer className="gap-2">
         {FEATURED_ITEMS.map((item, index) => (
-          <Slider
+          <FeaturedSlide
             key={item.id}
-            data-featured-slide
-            className="w-4/5 transition-opacity duration-700 ease-out [&.is-in-view]:opacity-20 [&.is-snapped]:opacity-100"
-          >
-            <button
-              type="button"
-              onClick={() => onSelect(item)}
-              aria-label={`Open ${item.title} screenshot`}
-              className="group/slide relative block aspect-[16/9] w-full overflow-hidden border border-border artwork-background text-left shadow-lg transition-shadow outline-none hover:shadow-xl focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-            >
-              <Picture
-                src={item.url}
-                alt=""
-                priority={index === 0}
-                className="absolute inset-0 h-full w-full object-contain p-2"
-              />
-              <span className="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/80 via-black/35 to-transparent px-5 pt-12 pb-4 text-sm font-semibold text-white sm:px-6 sm:pb-5 sm:text-base">
-                {item.title}
-              </span>
-            </button>
-          </Slider>
+            item={item}
+            index={index}
+            onSelect={onSelect}
+          />
         ))}
       </SliderContainer>
 
@@ -88,5 +73,42 @@ export function FeaturedCarousel({ onSelect }: FeaturedCarouselProps) {
         <ChevronRight className="size-5 sm:size-6" />
       </SliderNextButton>
     </Carousel>
+  )
+}
+
+interface FeaturedSlideProps {
+  item: GalleryItem
+  index: number
+  onSelect: (item: GalleryItem) => void
+}
+
+// The centered slide opens the viewer. A slide beside it scrolls to its
+// screenshot first, so a single click brings any visible screenshot forward.
+function FeaturedSlide({ item, index, onSelect }: FeaturedSlideProps) {
+  const { selectedIndex, onDotButtonClick } = useCarousel()
+  const isCentered = index === selectedIndex
+
+  return (
+    <Slider
+      data-featured-slide
+      className="w-4/5 transition-opacity duration-700 ease-out [&.is-in-view]:opacity-20 [&.is-snapped]:opacity-100"
+    >
+      <button
+        type="button"
+        onClick={() => (isCentered ? onSelect(item) : onDotButtonClick(index))}
+        aria-label={`${isCentered ? "Open" : "Show"} ${item.title} screenshot`}
+        className="group/slide relative block aspect-[16/9] w-full overflow-hidden border border-border artwork-background text-left shadow-lg transition-shadow outline-none hover:shadow-xl focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+      >
+        <Picture
+          src={item.url}
+          alt=""
+          priority={index === 0}
+          className="absolute inset-0 h-full w-full object-contain p-2"
+        />
+        <span className="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/80 via-black/35 to-transparent px-5 pt-12 pb-4 text-sm font-semibold text-white sm:px-6 sm:pb-5 sm:text-base">
+          {item.title}
+        </span>
+      </button>
+    </Slider>
   )
 }

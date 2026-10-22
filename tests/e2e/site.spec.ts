@@ -1,5 +1,7 @@
 import { expect, test } from "@playwright/test"
 
+import { LATEST_RELEASE_API_URL, REPOSITORY_URL } from "../../lib/site/config"
+
 test.describe("site route contract", () => {
   test("home renders its primary sections", async ({ page }) => {
     await page.goto("/")
@@ -92,6 +94,90 @@ test.describe("site route contract", () => {
 
     await page.keyboard.press("Escape")
     await expect(dialog).not.toBeVisible()
+  })
+
+  test("featured carousel slides beside the centered one scroll to their screenshot", async ({
+    page,
+  }) => {
+    await page.goto("/gallery")
+
+    const featuredCarousel = page.locator('[aria-label="Featured screenshots"]')
+    const featuredSlides = featuredCarousel.locator("[data-featured-slide]")
+    await expect(featuredSlides.nth(0)).toHaveClass(
+      /(?:^|\s)is-snapped(?:\s|$)/
+    )
+
+    await featuredSlides
+      .nth(1)
+      .locator("button")
+      .click({ position: { x: 6, y: 10 } })
+
+    await expect(featuredSlides.nth(1)).toHaveClass(
+      /(?:^|\s)is-snapped(?:\s|$)/
+    )
+    await expect(page.getByRole("dialog")).toHaveCount(0)
+
+    await featuredSlides.nth(1).locator("button").click()
+    await expect(page.getByRole("dialog")).toBeVisible()
+  })
+
+  test("contributing page shows its development notice and the GitHub link", async ({
+    page,
+  }) => {
+    await page.goto("/contributing")
+
+    await expect(page).toHaveTitle(/Contributing/)
+    await expect(
+      page.getByRole("heading", { name: "Contributing", exact: true })
+    ).toBeVisible()
+    await expect(
+      page.getByText("This page is still in development.")
+    ).toBeVisible()
+    await expect(
+      page.getByRole("link", { name: "View the project on GitHub" })
+    ).toHaveAttribute("href", REPOSITORY_URL)
+  })
+
+  test("navigation Contributing item links to the contributing page", async ({
+    page,
+  }) => {
+    await page.goto("/")
+
+    await page.getByRole("button", { name: "Resources", exact: true }).click()
+    await page.getByRole("link", { name: /^Contributing/ }).click()
+
+    await expect(page).toHaveURL(/\/contributing$/)
+    await expect(
+      page.getByRole("heading", { name: "Contributing", exact: true })
+    ).toBeVisible()
+  })
+
+  test("featured carousel dots show a pointer cursor", async ({ page }) => {
+    await page.goto("/gallery")
+
+    const featuredCarousel = page.locator('[aria-label="Featured screenshots"]')
+    const dots = featuredCarousel.locator("div.gap-2 > button")
+    await expect(dots).toHaveCount(4)
+
+    for (const dot of await dots.all()) {
+      await expect(dot).toHaveCSS("cursor", "pointer")
+    }
+  })
+
+  test("viewer image fills its frame without a black border", async ({
+    page,
+  }) => {
+    await page.goto("/gallery")
+    await page.getByAltText("Swiss pairings").click()
+
+    const dialog = page.getByRole("dialog")
+    await expect(dialog).toBeVisible()
+    const frame = dialog.locator(".artwork-background").first()
+    const wrapper = frame.locator("xpath=..")
+
+    await expect(wrapper).toHaveCSS("padding-top", "0px")
+    await expect(wrapper).toHaveCSS("padding-left", "0px")
+    await expect(wrapper).toHaveCSS("background-color", "rgba(0, 0, 0, 0)")
   })
 
   test("gallery featured carousel autoplays and screenshot grid stays rigid", async ({
@@ -203,7 +289,7 @@ test.describe("site route contract", () => {
     await page.goto("/download")
 
     const installerLink = page.getByRole("link", {
-      name: "Download MSI installer: Windows x64 installer",
+      name: "Download Setup installer: Windows x64 installer",
       exact: true,
     })
 
@@ -214,6 +300,49 @@ test.describe("site route contract", () => {
       page.getByRole("heading", {
         name: "Thank you for downloading Gambit Pairing!",
       })
+    ).toBeVisible()
+  })
+
+  test("download page offers the newest GitHub release", async ({ page }) => {
+    await page.route(LATEST_RELEASE_API_URL, (route) =>
+      route.fulfill({
+        json: {
+          tag_name: "v9.9.9",
+          published_at: "2030-01-01T00:00:00Z",
+          assets: [
+            {
+              name: "GambitPairing-win-Setup.exe",
+              browser_download_url:
+                "https://github.com/gambit-devs/gambit-pairing/releases/download/v9.9.9/GambitPairing-win-Setup.exe",
+              size: 52 * 1024 * 1024,
+            },
+          ],
+        },
+      })
+    )
+    await page.goto("/download")
+
+    await expect(page.getByText("9.9.9", { exact: true })).toBeVisible()
+    await expect(
+      page.getByRole("link", {
+        name: "Download Setup installer: Windows x64 installer",
+        exact: true,
+      })
+    ).toBeVisible()
+  })
+
+  test("download page keeps the build-time release when GitHub is unreachable", async ({
+    page,
+  }) => {
+    await page.route(LATEST_RELEASE_API_URL, (route) => route.abort())
+    await page.goto("/download")
+
+    await expect(
+      page.getByRole("region", { name: "Stable version" })
+    ).toContainText("Version")
+    await expect(page.getByText("9.9.9", { exact: true })).toHaveCount(0)
+    await expect(
+      page.getByRole("heading", { name: "Gambit Pairing for Windows" })
     ).toBeVisible()
   })
 
@@ -234,6 +363,21 @@ test.describe("site route contract", () => {
     const response = await page.goto("/download/plan9")
 
     expect(response?.status()).toBe(404)
+  })
+
+  test("not found page shows a chess piece and links back home", async ({
+    page,
+  }) => {
+    const response = await page.goto("/no-such-page")
+
+    expect(response?.status()).toBe(404)
+    await expect(
+      page.getByRole("heading", { name: "Page not found", exact: true })
+    ).toBeVisible()
+    await expect(page.locator('img[src^="/photos/"]').first()).toBeVisible()
+    await expect(
+      page.getByRole("link", { name: "Back to home", exact: true })
+    ).toHaveAttribute("href", "/")
   })
 
   test("navigation and FAQ interactions respond", async ({ page }) => {

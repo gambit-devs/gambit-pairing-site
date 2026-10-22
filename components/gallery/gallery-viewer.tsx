@@ -188,7 +188,7 @@ function Modal({ selected, setSelected }: ModalProps) {
     >
       <div
         onClick={(event) => event.stopPropagation()}
-        className="relative w-full max-w-[1280px] cursor-default bg-black p-2 shadow-2xl sm:p-3"
+        className="relative w-full max-w-[1280px] cursor-default shadow-2xl"
       >
         <div className="relative flex aspect-[4/3] w-full items-center justify-center overflow-hidden artwork-background sm:aspect-auto sm:h-[min(82vh,900px)]">
           <Picture

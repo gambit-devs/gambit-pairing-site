@@ -8,6 +8,8 @@ export const ISSUES_URL = `${REPOSITORY_URL}/issues`
 export const PULL_REQUESTS_URL = `${REPOSITORY_URL}/pulls`
 export const RELEASES_URL = `${REPOSITORY_URL}/releases`
 export const LATEST_RELEASE_URL = `${RELEASES_URL}/latest`
+export const LATEST_RELEASE_API_URL =
+  "https://api.github.com/repos/gambit-devs/gambit-pairing/releases/latest"
 export const USER_DOCS_REPOSITORY_URL =
   "https://github.com/gambit-devs/user-docs"
 export const USER_DOCS_BRANCH = "main"

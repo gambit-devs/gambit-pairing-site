@@ -529,7 +529,7 @@ export const SliderDotButton = forwardRef<HTMLDivElement, SliderDotButtonProps>(
             type="button"
             onClick={() => onDotButtonClick(index)}
             className={cn(
-              "relative m-0 inline-flex p-0",
+              "relative m-0 inline-flex cursor-pointer p-0",
               orientation === "vertical" ? "h-6 w-1" : "h-1 w-6"
             )}
           >

@@ -93,7 +93,7 @@ const RESOURCES: ProductLink[] = [
   {
     title: "Contributing",
     desc: "Learn how to contribute to Gambit Pairing.",
-    href: "#",
+    href: "/contributing",
   },
 ]
 
