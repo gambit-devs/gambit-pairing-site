@@ -1,12 +1,12 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 
+import { HomeButton } from "@/components/not-found/home-button"
 import { NotFoundArtwork } from "@/components/not-found/not-found-artwork"
 import { SiteFooter } from "@/components/layout/site-footer"
 import { SiteNavigation } from "@/components/navigation/site-navigation"
 import { FancyText } from "@/components/ui/fancy-text"
 import { getLatestRelease } from "@/lib/github/client"
-import { SITE_ANCHORS } from "@/lib/site/config"
 
 export const metadata: Metadata = {
   title: "Page not found",
@@ -36,30 +36,15 @@ export default async function NotFound() {
       <section className="mx-auto flex w-full max-w-3xl flex-col items-center px-6 pt-10 pb-16 text-center sm:pt-14">
         <NotFoundArtwork />
 
-        <p className="mt-10 text-sm font-semibold tracking-wide text-muted-foreground uppercase">
-          Error 404
-        </p>
-        <h1 className="mt-3 text-4xl font-bold tracking-tight sm:text-5xl">
+        <h1 className="mt-10 text-4xl font-bold tracking-tight sm:text-5xl">
           Page not found
         </h1>
-        <p className="mt-5 max-w-xl text-lg text-muted-foreground">
-          This square is empty. The page may have moved, or the address may be
-          wrong.
+        <p className="mt-3 text-lg text-muted-foreground">
+          This page does not exist.
         </p>
 
-        <div className="mt-8 flex flex-wrap justify-center gap-4">
-          <Link
-            href="/"
-            className="inline-flex h-12 items-center bg-[var(--download-button)] px-6 font-bold text-white transition-none hover:bg-[var(--download-button-hover)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring active:bg-[var(--download-button-active)]"
-          >
-            Back to home
-          </Link>
-          <Link
-            href={SITE_ANCHORS.downloads}
-            className="inline-flex h-12 items-center border border-border px-6 font-semibold transition-colors hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
-          >
-            Download Gambit Pairing
-          </Link>
+        <div className="mt-8">
+          <HomeButton />
         </div>
       </section>
 
