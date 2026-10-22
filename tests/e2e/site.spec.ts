@@ -477,6 +477,36 @@ test.describe("site route contract", () => {
     await expect(resourcesTrigger).toHaveAttribute("aria-expanded", "false")
     await expect(documentationLink).not.toBeVisible()
   })
+
+  test("navigation panels fit the screen without page scroll", async ({
+    page,
+  }) => {
+    await page.goto("/")
+
+    const navigation = page.locator('[data-slot="navigation-menu"]')
+    for (const trigger of ["Product", "Resources"]) {
+      await navigation
+        .getByRole("button", { name: trigger, exact: true })
+        .click()
+
+      await expect
+        .poll(() =>
+          page.evaluate(() => {
+            const panel = document.querySelector(
+              '[data-slot="navigation-menu-viewport"]'
+            )
+            const screenWidth = document.documentElement.clientWidth
+
+            return {
+              panelFits:
+                (panel?.getBoundingClientRect().right ?? 0) <= screenWidth,
+              pageFits: document.documentElement.scrollWidth <= screenWidth,
+            }
+          })
+        )
+        .toEqual({ panelFits: true, pageFits: true })
+    }
+  })
 })
 
 test.describe("visual contract", () => {

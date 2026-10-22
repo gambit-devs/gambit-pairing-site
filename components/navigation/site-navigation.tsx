@@ -154,7 +154,8 @@ export function SiteNavigation({
                 <MotionNavigationMenuContent
                   highlightClassName={highlightClassName}
                 >
-                  <div className="grid w-[500px] grid-cols-[1fr_1.25fr] gap-2">
+                  {/* Shrinks to fit phone screens; desktop keeps the full 500px. */}
+                  <div className="grid w-[min(500px,calc(100vw-2.25rem))] grid-cols-[1fr_1.25fr] gap-2">
                     <MotionNavigationMenuLink
                       href={SITE_ANCHORS.latestRelease}
                       highlight={false}
@@ -238,7 +239,7 @@ export function SiteNavigation({
                 <MotionNavigationMenuContent
                   highlightClassName={highlightClassName}
                 >
-                  <div className="flex w-[320px] flex-col gap-0.5">
+                  <div className="flex w-[min(320px,calc(100vw-2.25rem))] flex-col gap-0.5">
                     {RESOURCES.map((resource) => (
                       <MotionNavigationMenuLink
                         key={resource.title}
